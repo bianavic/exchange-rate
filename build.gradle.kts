@@ -25,10 +25,17 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
-	implementation("io.github.openfeign:feign-jackson:12.3")
-	testImplementation("io.github.openfeign:feign-mock:12.3")
+//	implementation("com.netflix.feign:feign-gson:8.18.0")
+//	implementation("io.github.openfeign:feign-okhttp:12.3")
+//	implementation("io.github.openfeign:feign-jackson:12.3")
+//	runtimeOnly("com.netflix.feign:feign-core:8.18.0")
+
+
+//	implementation("io.github.openfeign:feign-jackson:12.3")
+//	testImplementation("io.github.openfeign:feign-mock:12.3")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
