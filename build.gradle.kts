@@ -27,9 +27,14 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+	implementation ("jakarta.validation:jakarta.validation-api")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+	runtimeOnly("com.h2database:h2")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
