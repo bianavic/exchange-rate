@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable
 interface ExchangeClientFeign {
 
     @GetMapping("/latest/{baseCode}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun getExchangeFromBRL(
+    fun getLatestExchangeFor(
         @PathVariable("baseCode") baseCode: String): String
 
 }

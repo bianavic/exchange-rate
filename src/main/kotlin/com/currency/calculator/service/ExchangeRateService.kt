@@ -15,7 +15,7 @@ class ExchangeRateService(
     private val json = Json { ignoreUnknownKeys = true }
 
     fun getLatestByBaseCode(baseCode: String): ConversionRatesResponse {
-        val exchangeRateResponse = exchangeClientFeign.getExchangeFromBRL(baseCode)
+        val exchangeRateResponse = exchangeClientFeign.getLatestExchangeFor(baseCode)
         return json.decodeFromString<ExchangeRateClient>(exchangeRateResponse).conversion_rates
     }
 
