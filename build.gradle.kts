@@ -22,6 +22,7 @@ repositories {
 extra["springCloudVersion"] = "2022.0.3"
 
 dependencies {
+
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -37,6 +38,11 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.mockito:mockito-core:5.4.0")
+
+//	testImplementation("com.github.tomakehurst:wiremock:3.0.0-beta-10")
+//	testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
+
 }
 
 dependencyManagement {

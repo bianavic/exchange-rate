@@ -20,4 +20,8 @@ class ProductService {
         return productRepository.findByPrice(price).get()
     }
 
+    fun getProductById(id: Long): Product {
+        return productRepository.findProductById(id)
+    }
+
 }

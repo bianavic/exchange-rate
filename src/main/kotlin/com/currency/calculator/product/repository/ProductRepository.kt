@@ -11,4 +11,6 @@ interface ProductRepository: JpaRepository<Product, Long> {
 
     fun findByPrice(price: BigDecimal): Optional<Product>
 
+    fun findProductById(id: Long): Product
+
 }

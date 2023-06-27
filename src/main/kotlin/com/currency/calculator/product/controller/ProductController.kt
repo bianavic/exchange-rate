@@ -22,9 +22,14 @@ class ProductController {
         return productService.addProduct(product)
     }
 
-    @GetMapping("/{price}")
-    fun getByPrice(@PathVariable price: BigDecimal): Product {
-        return productService.getByPrice(price)
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: Long): Product {
+        return productService.getProductById(id)
     }
+
+//    @GetMapping("/{price}")
+//    fun getByPrice(@PathVariable price: BigDecimal): Product {
+//        return productService.getByPrice(price)
+//    }
 
 }
