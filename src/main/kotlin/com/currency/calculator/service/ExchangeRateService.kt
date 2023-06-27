@@ -1,6 +1,7 @@
-package com.currency.calculator.client
+package com.currency.calculator.service
 
-import com.currency.calculator.ExchangeRateResponse
+import com.currency.calculator.ExchangeRateClient
+import com.currency.calculator.client.ConversionRatesResponse
 import com.currency.calculator.client.feign.ExchangeClientFeign
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -13,9 +14,9 @@ class ExchangeRateService(
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    fun getByBRL(baseCode: String): ConversionRates {
+    fun getLatestByBaseCode(baseCode: String): ConversionRatesResponse {
         val exchangeRateResponse = exchangeClientFeign.getExchangeFromBRL(baseCode)
-        return json.decodeFromString<ExchangeRateResponse>(exchangeRateResponse).conversion_rates
+        return json.decodeFromString<ExchangeRateClient>(exchangeRateResponse).conversion_rates
     }
 
 }
