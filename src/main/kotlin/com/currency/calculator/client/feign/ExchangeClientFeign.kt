@@ -1,6 +1,5 @@
 package com.currency.calculator.client.feign
 
-import com.currency.calculator.ExchangeRateResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,8 +10,6 @@ interface ExchangeClientFeign {
 
     @GetMapping("/latest/{baseCode}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun getExchangeFromBRL(
-//        @RequestHeader("Accept") acceptHeader: String,
-//        @RequestHeader("Content-Type") contentTypeHeader: String,
         @PathVariable("baseCode") baseCode: String): String
 
 }

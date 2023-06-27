@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class ExchangeRateController(
-    @Autowired val exchangeRateService: ExchangeRateService
-) {
+class ExchangeRateController(@Autowired val exchangeRateService: ExchangeRateService) {
 
     @GetMapping("/latest/{baseCode}")
     fun getByBRL(@PathVariable baseCode: String): ConversionRates {

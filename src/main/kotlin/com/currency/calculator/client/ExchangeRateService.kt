@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ExchangeRateService(
-    @Autowired private val exchangeClientFeign: ExchangeClientFeign
-) {
+    @Autowired private val exchangeClientFeign: ExchangeClientFeign) {
 
     private val json = Json { ignoreUnknownKeys = true }
 

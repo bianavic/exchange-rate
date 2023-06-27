@@ -31,15 +31,6 @@ dependencies {
 
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
-//	implementation("com.netflix.feign:feign-gson:8.18.0")
-//	implementation("io.github.openfeign:feign-okhttp:12.3")
-//	implementation("io.github.openfeign:feign-jackson:12.3")
-//	runtimeOnly("com.netflix.feign:feign-core:8.18.0")
-
-
-//	implementation("io.github.openfeign:feign-jackson:12.3")
-//	testImplementation("io.github.openfeign:feign-mock:12.3")
-
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
