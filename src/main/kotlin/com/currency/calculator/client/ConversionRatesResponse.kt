@@ -2,10 +2,11 @@ package com.currency.calculator.client
 
 import kotlinx.serialization.Serializable
 
+// ConversionRates
 @Serializable
 data class ConversionRatesResponse(
     var BRL: Double,
-    val EUR: Double,
-    val INR: Double,
-    val USD: Double
+    var EUR: Double,
+    var INR: Double,
+    var USD: Double
 )

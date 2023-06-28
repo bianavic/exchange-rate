@@ -2,11 +2,13 @@ package com.currency.calculator.client
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.springframework.stereotype.Component
 
 @Serializable
+@Component
 data class ExchangeRate(
     @SerialName("base_code")
-    val baseCode: String,
+    val base_code: String = "",
     @SerialName("conversion_rates")
-    val conversionRates: ConversionRatesResponse
+    val conversion_rates: ConversionRatesResponse
 )
