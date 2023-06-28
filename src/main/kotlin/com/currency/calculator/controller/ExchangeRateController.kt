@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class ExchangeRateController(
     private val exchangeRateService: ExchangeRateService,
-//    @Autowired val exchangeService: ExchangeService,
 ) {
 
     @GetMapping("/latest/{baseCode}")
@@ -16,7 +15,7 @@ class ExchangeRateController(
     }
 
     @GetMapping("/BRL/(productPrice)")
-    fun convertProductPrice(@PathVariable("productPrice") productPrice: Double): Map<String, Double> {
+    fun convertProductPrice(@PathVariable productPrice: Double): Map<String, Double> {
         return exchangeRateService.getConvertedPrices(productPrice)
     }
 }
