@@ -1,4 +1,4 @@
-package com.currency.calculator.client
+package com.currency.calculator.client.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

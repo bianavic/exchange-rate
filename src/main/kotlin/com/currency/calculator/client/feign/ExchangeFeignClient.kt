@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 
 // FeignClient
 @FeignClient(name = "exchangeapi", url = "\${exchange.url}")
-interface ExchangeClientFeign {
+interface ExchangeFeignClient {
 
     @GetMapping("/latest/{baseCode}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun getLatestExchangeFor(

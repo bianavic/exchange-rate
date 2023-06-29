@@ -1,10 +1,11 @@
-package com.currency.calculator.client
+package com.currency.calculator.client.model
 
+import com.currency.calculator.client.model.ConversionRatesResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ExchangeRate(
+data class ExchangeRatesResponse(
     @SerialName("base_code")
     val base_code: String = "",
     @SerialName("conversion_rates")

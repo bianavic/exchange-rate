@@ -1,6 +1,6 @@
 package com.currency.calculator.controller
 
-import com.currency.calculator.client.ConversionRatesResponse
+import com.currency.calculator.client.model.ConversionRatesResponse
 import com.currency.calculator.service.ExchangeRateService
 import org.springframework.web.bind.annotation.*
 
