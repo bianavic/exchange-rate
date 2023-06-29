@@ -1,6 +1,5 @@
 package com.currency.calculator.client.model
 
-import com.currency.calculator.client.model.ConversionRatesResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
