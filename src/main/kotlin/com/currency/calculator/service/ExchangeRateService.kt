@@ -1,8 +1,8 @@
 package com.currency.calculator.service
 
+import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ConversionRatesResponse
 import com.currency.calculator.client.model.ExchangeRatesResponse
-import com.currency.calculator.client.feign.ExchangeFeignClient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.springframework.stereotype.Service

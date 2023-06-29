@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "3.1.1"
 	id("io.spring.dependency-management") version "1.1.0"
+	id("jacoco")
 	kotlin("jvm") version "1.8.22"
 	kotlin("plugin.spring") version "1.8.22"
 	kotlin("plugin.serialization") version "1.8.22"
@@ -41,9 +42,7 @@ dependencies {
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.mockito:mockito-core:5.4.0")
-
-//	testImplementation("com.github.tomakehurst:wiremock:3.0.0-beta-10")
-//	testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 
 }
 
@@ -62,4 +61,20 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.8"
+	reportsDir = file("$buildDir/reports/jacoco")
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
+	reports {
+		xml.required.set(false)
+		csv.required.set(false)
+		csv.required.set(true)
+	}
+
+	finalizedBy("jacocoTestReport")
 }
