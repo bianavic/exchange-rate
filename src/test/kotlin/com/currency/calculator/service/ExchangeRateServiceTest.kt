@@ -2,6 +2,7 @@ package com.currency.calculator.service
 
 import com.currency.calculator.client.model.ConversionRatesResponse
 import com.currency.calculator.controller.ExchangeRateController
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.MediaType
@@ -17,6 +18,7 @@ class ExchangeRateServiceTest {
     private val mockMvc: MockMvc = MockMvcBuilders.standaloneSetup(exchangeRateController).build()
 
     @Test
+    @DisplayName("Should get latest Currency by Base Code")
     fun getLatestByBaseCode() {
 
         val baseCode = "BRL"

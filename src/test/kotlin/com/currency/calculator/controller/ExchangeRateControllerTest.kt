@@ -2,6 +2,7 @@ package com.currency.calculator.controller
 
 import com.currency.calculator.client.model.ConversionRatesResponse
 import com.currency.calculator.service.ExchangeRateService
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,8 +23,10 @@ class ExchangeRateControllerTest {
     @MockBean
     private lateinit var exchangeRateService: ExchangeRateService
 
+    // @ParameterizedTest
     @Test
-    fun should_return_latest_rates_for_BRL() {
+    @DisplayName("Should Return Latest Rates for BRL")
+    fun getLatestRatesFor() {
 
         val baseCode = "BRL"
         val conversionRates = ConversionRatesResponse(1.0, 5.278, 16.90660, 4.85)
@@ -37,8 +40,10 @@ class ExchangeRateControllerTest {
 
     }
 
+    // @ParameterizedTest
     @Test
-    fun should_calculate_currency_conversion_for_BRL() {
+    @DisplayName("Should Calculate Currency Conversion for BRL")
+    fun calculateCurrencyConversion() {
 
         val amount = 529.99
         val conversionRates = ConversionRatesResponse(1.0, 5.278, 16.90660, 4.85 )
