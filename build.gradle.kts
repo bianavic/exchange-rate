@@ -33,16 +33,27 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+	implementation("io.github.openfeign:feign-core:12.3")
+	implementation("io.github.openfeign:feign-gson:12.3")
+	implementation("io.github.openfeign:feign-httpclient:12.3")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
 	implementation("com.google.code.gson:gson:2.10.1")
 
-	runtimeOnly("com.h2database:h2")
+	implementation("org.junit.platform:junit-platform-launcher:1.8.1")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.mockito:mockito-core:5.4.0")
-	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+
+	testImplementation("com.github.tomakehurst:wiremock:3.0.0-beta-10")
+	testImplementation("com.github.tomakehurst:wiremock-standalone:3.0.0-beta-10")
+	testImplementation("ru.lanwen.wiremock:wiremock-junit5:1.3.1")
+	testImplementation("org.eclipse.jetty:jetty-alpn-openjdk8-server:9.4.43.v20210629")
+	testImplementation("org.eclipse.jetty:jetty-alpn-openjdk8-client:9.4.43.v20210629")
 
 }
 
