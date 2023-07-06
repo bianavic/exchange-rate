@@ -30,7 +30,6 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	implementation ("jakarta.validation:jakarta.validation-api")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("io.github.openfeign:feign-core:12.3")
@@ -41,19 +40,13 @@ dependencies {
 
 	implementation("com.google.code.gson:gson:2.10.1")
 
-	implementation("org.junit.platform:junit-platform-launcher:1.8.1")
+	runtimeOnly("io.kotest:kotest-assertions-core:5.6.2")
+	runtimeOnly("io.kotest:kotest-property:5.6.2")
 
+	testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
+	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.mockito:mockito-core:5.4.0")
-	testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-
-	testImplementation("com.github.tomakehurst:wiremock:3.0.0-beta-10")
-	testImplementation("com.github.tomakehurst:wiremock-standalone:3.0.0-beta-10")
-	testImplementation("ru.lanwen.wiremock:wiremock-junit5:1.3.1")
-	testImplementation("org.eclipse.jetty:jetty-alpn-openjdk8-server:9.4.43.v20210629")
-	testImplementation("org.eclipse.jetty:jetty-alpn-openjdk8-client:9.4.43.v20210629")
+	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
 
 }
 
@@ -76,7 +69,7 @@ tasks.withType<Test> {
 
 jacoco {
 	toolVersion = "0.8.8"
-	reportsDir = file("$buildDir/reports/jacoco")
+	reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
 }
 
 tasks.jacocoTestReport {
@@ -84,8 +77,8 @@ tasks.jacocoTestReport {
 	reports {
 		xml.required.set(false)
 		csv.required.set(false)
-		csv.required.set(true)
+		html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
 	}
 
-	finalizedBy("jacocoTestReport")
+	finalizedBy(tasks.jacocoTestReport)
 }
