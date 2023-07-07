@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,6 +39,7 @@ internal class ExchangeRateControllerTest {
     }
 
     @Test
+    @DisplayName("should get latest rates for BRL money")
     fun getLatestRatesFor() {
         var resultExpected = ConversionRatesResponse(1.0, 0.1892, 17.0002, 0.2061)
         val baseCode = "BRL"
