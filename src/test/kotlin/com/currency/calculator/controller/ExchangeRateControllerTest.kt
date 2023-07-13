@@ -2,62 +2,52 @@ package com.currency.calculator.controller
 
 import com.currency.calculator.client.model.ConversionRatesResponse
 import com.currency.calculator.service.ExchangeRateService
-import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.google.gson.Gson
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 internal class ExchangeRateControllerTest {
-
-    private val gson = Gson()
-
-    @Autowired
-    lateinit var exchangeRateController: ExchangeRateController
 
     @Autowired
     lateinit var exchangeRateService: ExchangeRateService
 
-    var wireMockServer = WireMockServer(9999)
-
-    @BeforeEach
-    fun setup(){
-        wireMockServer.start()
-    }
-
-    @AfterEach
-    fun close(){
-        wireMockServer.stop()
-    }
+    lateinit var mockExchangeResponse: ConversionRatesResponse
 
     @Test
     @DisplayName("should get latest rates for BRL money")
     fun getLatestRatesFor() {
 
-        var resultExpected = ConversionRatesResponse(1.0, 0.1892, 17.0002, 0.2061)
         val baseCode = "BRL"
 
-        wireMockServer.stubFor(
-            WireMock.get(WireMock.urlPathEqualTo("/latest/$baseCode"))
-                .willReturn(
-                    WireMock.aResponse()
-                        .withBody(gson.toJson(resultExpected))
-                        .withHeader("Content-Type", "application/json")))
+        var expectedResponse = ConversionRatesResponse(1.0, 0.187, 16.9601, 0.2061)
 
-        var result = exchangeRateController.getLatestRatesFor(baseCode)
+        var response = exchangeRateService.getLatestByBaseCode(baseCode)
 
-        Assertions.assertEquals(result, resultExpected)
+        Assertions.assertEquals(response, expectedResponse)
     }
+
+//    @Test
+//    @DisplayName("should get NOT FOUND latest rates for BRL money")
+//    fun getLatestRatesNotFoundForBaseCode() {
+//
+//        val baseCode = "AEI"
+//
+//        var expectedResponse = ConversionRatesResponse(1.0, 0.1858, 16.8273, 0.2043)
+////        var expectedResponse = exchangeRateController.getLatestRatesFor(baseCode).body
+//
+//        var response = exchangeRateService.getLatestByBaseCode(baseCode)
+//
+//        Assertions.assertThrows(BaseCodeNotFoundException::class.java) {
+//            exchangeRateService.getLatestByBaseCode(baseCode)
+//        }
+//    }
 
     @Test
     @DisplayName("should calculate currency conversion")
@@ -78,9 +68,9 @@ internal class ExchangeRateControllerTest {
 
         val exchangeRateController = ExchangeRateController(exchangeRateService)
 
-        val result = exchangeRateController.calculateCurrencyConversion(amount)
+        val response = exchangeRateController.calculateCurrencyConversion(amount).body
 
-        Assertions.assertEquals(expectedResponse, result)
+        Assertions.assertEquals(response, expectedResponse)
     }
 
 }
