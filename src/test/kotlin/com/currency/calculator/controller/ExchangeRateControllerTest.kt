@@ -2,35 +2,62 @@ package com.currency.calculator.controller
 
 import com.currency.calculator.client.model.ConversionRatesResponse
 import com.currency.calculator.service.ExchangeRateService
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
+import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
-
+@AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class ExchangeRateControllerTest {
 
-    @Autowired
-    lateinit var exchangeRateService: ExchangeRateService
+    companion object {
+        private lateinit var wireMockServer: WireMockServer
+        private const val baseCode = "BRL"
 
-    lateinit var mockExchangeResponse: ConversionRatesResponse
+        @BeforeAll
+        @JvmStatic
+        fun init() {
+            wireMockServer = WireMockServer(
+                WireMockConfiguration().port(9999)
+            )
+            wireMockServer.start()
+            WireMock.configureFor("localhost", 9999)
+        }
+    }
+
+    @Autowired
+    private lateinit var mockMvc: MockMvc
 
     @Test
     @DisplayName("should get latest rates for BRL money")
     fun getLatestRatesFor() {
 
-        val baseCode = "BRL"
+        val expectedResponse = """
+            {
+              "BRL": 1.0,
+              "EUR": 0.186,
+              "INR": 17.0755,
+              "USD": 0.208
+            }
+        """.trimIndent()
 
-        var expectedResponse = ConversionRatesResponse(1.0, 0.187, 16.9601, 0.2061)
+        val request = MockMvcRequestBuilders.get("/latest/$baseCode")
+        val response = mockMvc.perform(request).andReturn().response
+        val actualJson = response.contentAsString
 
-        var response = exchangeRateService.getLatestByBaseCode(baseCode)
-
-        Assertions.assertEquals(response, expectedResponse)
+        JSONAssert.assertEquals(expectedResponse, actualJson, true)
     }
 
 //    @Test
