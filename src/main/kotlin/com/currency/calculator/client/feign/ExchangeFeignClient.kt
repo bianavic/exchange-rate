@@ -1,5 +1,6 @@
 package com.currency.calculator.client.feign
 
+import com.currency.calculator.client.error.ExchangeErrorDecoder
 import com.currency.calculator.client.exceptions.BaseCodeNotFoundException
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType

@@ -1,7 +1,7 @@
 package com.currency.calculator.client
 
 import com.currency.calculator.client.exceptions.*
-import com.currency.calculator.client.feign.ExchangeErrorDecoder
+import com.currency.calculator.client.error.ExchangeErrorDecoder
 import feign.Response
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

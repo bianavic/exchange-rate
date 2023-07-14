@@ -60,22 +60,6 @@ internal class ExchangeRateControllerTest {
         JSONAssert.assertEquals(expectedResponse, actualJson, true)
     }
 
-//    @Test
-//    @DisplayName("should get NOT FOUND latest rates for BRL money")
-//    fun getLatestRatesNotFoundForBaseCode() {
-//
-//        val baseCode = "AEI"
-//
-//        var expectedResponse = ConversionRatesResponse(1.0, 0.1858, 16.8273, 0.2043)
-////        var expectedResponse = exchangeRateController.getLatestRatesFor(baseCode).body
-//
-//        var response = exchangeRateService.getLatestByBaseCode(baseCode)
-//
-//        Assertions.assertThrows(BaseCodeNotFoundException::class.java) {
-//            exchangeRateService.getLatestByBaseCode(baseCode)
-//        }
-//    }
-
     @Test
     @DisplayName("should calculate currency conversion")
     fun calculateCurrencyConversion() {

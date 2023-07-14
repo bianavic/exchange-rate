@@ -1,4 +1,4 @@
-package com.currency.calculator.client.feign
+package com.currency.calculator.client.error
 
 import com.currency.calculator.client.exceptions.*
 import com.google.gson.Gson
