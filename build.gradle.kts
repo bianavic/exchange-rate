@@ -45,6 +45,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
 	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.3")
 	testImplementation("io.mockk:mockk:1.13.5")
+	testImplementation("org.mockito:mockito-inline:5.2.0")
 	testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
