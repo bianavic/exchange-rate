@@ -1,7 +1,7 @@
 package com.currency.calculator.client
 
-import com.currency.calculator.client.exceptions.*
 import com.currency.calculator.client.error.ExchangeErrorDecoder
+import com.currency.calculator.client.exceptions.*
 import feign.Response
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -52,6 +52,19 @@ class ExchangeExceptionTests {
     }
 
     @Test
+    fun `test should return BaseCodeNotFoundException`() {
+        // Arrange
+        val response = createMockResponse(404)
+
+        // Act
+        val exception = error.decode("", response)
+
+        // Assert
+        assertEquals(BaseCodeNotFoundException::class.java, exception.javaClass)
+        assertEquals("Base code not found", exception.message)
+    }
+
+    @Test
     fun `test should return QuotaReachedException`() {
         // Arrange
         val response = createMockResponse(429)
@@ -65,16 +78,16 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return BaseCodeNotFoundException`() {
+    fun `test should return UnknownErrorException`() {
         // Arrange
-        val response = createMockResponse(404)
+        val response = createMockResponse(500)
 
         // Act
         val exception = error.decode("", response)
 
         // Assert
-        assertEquals(BaseCodeNotFoundException::class.java, exception.javaClass)
-        assertEquals("Base code not found", exception.message)
+        assertEquals(UnknownErrorException::class.java, exception.javaClass)
+        assertEquals("Unknown error occurred", exception.message)
     }
 
     private fun createMockResponse(statusCode: Int): Response {
