@@ -51,7 +51,7 @@ class ExchangeRateServiceTest {
 
         val exchangeRateService = ExchangeRateService(exchangeFeignClient)
 
-        val exception = assertThrows<BaseCodeNotFoundException>() {
+        val exception = assertThrows<BaseCodeNotFoundException> {
             exchangeRateService.getLatestByBaseCode(baseCode)
         }
         assertEquals("Base code $baseCode not found", exception.message)

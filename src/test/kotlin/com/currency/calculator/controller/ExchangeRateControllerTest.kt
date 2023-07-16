@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 internal class ExchangeRateControllerTest {
 
     companion object {
-        private lateinit var wireMockServer: WireMockServer
         private const val baseCode = "BRL"
     }
 
@@ -31,8 +30,6 @@ internal class ExchangeRateControllerTest {
 
     @MockBean
     private lateinit var exchangeRateService: ExchangeRateService
-
-    val gson = Gson()
 
     @Test
     @DisplayName("should get latest rates for BRL money")

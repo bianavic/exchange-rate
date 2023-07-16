@@ -1,20 +1,15 @@
 package com.currency.calculator.client.error
 
 import com.currency.calculator.client.exceptions.*
-import com.google.gson.Gson
 import feign.Response
 import feign.codec.ErrorDecoder
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 
 
 class ExchangeErrorDecoder : ErrorDecoder {
 
-    private val log = LoggerFactory.getLogger(this.javaClass)
-    private val gson = Gson()
-
     override fun decode(methodKey: String?, response: Response?): java.lang.Exception {
-        val statusCode = response?.status()?.toInt() ?: HttpStatus.INTERNAL_SERVER_ERROR.value()
+        val statusCode = response?.status() ?: HttpStatus.INTERNAL_SERVER_ERROR.value()
 
         return when (statusCode) {
             HttpStatus.BAD_REQUEST.value() -> MalformedRequestException("Malformed request")
