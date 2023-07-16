@@ -1,6 +1,6 @@
 package com.currency.calculator.controller
 
-import com.currency.calculator.client.model.ConversionRatesResponse
+import com.currency.calculator.client.model.RatesResponse
 import com.currency.calculator.service.ExchangeRateService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,7 +12,7 @@ class ExchangeRateController(
 ) {
 
     @GetMapping("/latest/{baseCode}")
-    fun getLatestRatesFor(@PathVariable baseCode: String): ResponseEntity<ConversionRatesResponse> {
+    fun getLatestRatesFor(@PathVariable baseCode: String): ResponseEntity<RatesResponse> {
 
         val response = exchangeRateService.getLatestByBaseCode(baseCode)
         return if (response != null) ResponseEntity(response, HttpStatus.OK)

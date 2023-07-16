@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConversionRatesResponse(
+data class RatesResponse(
     @SerialName("BRL")
     var BRL: Double,
     @SerialName("EUR")

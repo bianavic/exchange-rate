@@ -1,6 +1,6 @@
 package com.currency.calculator.controller
 
-import com.currency.calculator.mock.ConversionRatesResponseMock
+import com.currency.calculator.mock.RatesResponseMock
 import com.currency.calculator.service.ExchangeRateService
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.google.gson.Gson
@@ -37,7 +37,7 @@ internal class ExchangeRateControllerTest {
     @Test
     @DisplayName("should get latest rates for BRL money")
     fun getLatestRatesFor() {
-        val conversionRatesMock = ConversionRatesResponseMock()
+        val ratesResponseMock = RatesResponseMock()
         val expectedResponse = """
             {
             "BRL": 1.0,
@@ -47,7 +47,7 @@ internal class ExchangeRateControllerTest {
             }
         """.trimIndent()
 
-        val mockResponse = conversionRatesMock.getLatestRates()
+        val mockResponse = ratesResponseMock.getLatestRates()
         Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(mockResponse)
 
         val request = MockMvcRequestBuilders.get("/latest/$baseCode")
@@ -63,10 +63,10 @@ internal class ExchangeRateControllerTest {
 
         val amount = 529.99
         val baseCode = "BRL"
-        val conversionRatesMock = ConversionRatesResponseMock()
-        val conversionRates = conversionRatesMock.getLatestRates()
+        val ratesResponseMock = RatesResponseMock()
+        val rates = ratesResponseMock.getLatestRates()
 
-        Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(conversionRates)
+        Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(rates)
 
         val exchangeRateController = ExchangeRateController(exchangeRateService)
 
@@ -75,9 +75,9 @@ internal class ExchangeRateControllerTest {
 
         Assertions.assertNotNull(actualResponse)
         val expectedResponse = mapOf(
-            "EUR" to (amount * conversionRates.EUR),
-            "USD" to (amount * conversionRates.USD),
-            "INR" to (amount * conversionRates.INR)
+            "EUR" to (amount * rates.EUR),
+            "USD" to (amount * rates.USD),
+            "INR" to (amount * rates.INR)
         )
         Assertions.assertEquals(expectedResponse, actualResponse)
     }
