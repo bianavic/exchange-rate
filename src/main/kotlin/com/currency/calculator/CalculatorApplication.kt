@@ -6,8 +6,12 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 
 @EnableFeignClients
 @SpringBootApplication
-class CalculatorApplication
+class CalculatorApplication {
 
-fun main(args: Array<String>) {
-	runApplication<CalculatorApplication>(*args)
+	companion object {
+		@JvmStatic
+		fun main(args: Array<String>) {
+			runApplication<CalculatorApplication>(*args)
+		}
+	}
 }
