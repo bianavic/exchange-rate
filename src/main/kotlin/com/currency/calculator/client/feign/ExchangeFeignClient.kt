@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable
     name = "exchangeapi",
     url = "\${exchange.url}",
     configuration = [FeignConfig::class, ExchangeErrorDecoder::class]
-) interface ExchangeFeignClient {
+)
+fun interface ExchangeFeignClient {
 
     @GetMapping("/latest/{baseCode}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     @Throws(BaseCodeNotFoundException::class)

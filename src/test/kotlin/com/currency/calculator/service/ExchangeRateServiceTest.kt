@@ -1,11 +1,13 @@
 package com.currency.calculator.service
 
+import com.currency.calculator.client.exceptions.BaseCodeNotFoundException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.RatesResponse
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class ExchangeRateServiceTest {
 
@@ -37,6 +39,22 @@ class ExchangeRateServiceTest {
 
         // Assert
         assertEquals(expectedConversionRates, result)
+    }
+    
+    @Test
+    fun `should throw base code NOT FOUND exception for an invalid base code` () {
+
+        val baseCode = "XYZ"
+
+        val exchangeFeignClient = mockk<ExchangeFeignClient>()
+        every { exchangeFeignClient.getLatestExchangeFor(baseCode) } throws Exception("Base code not found")
+
+        val exchangeRateService = ExchangeRateService(exchangeFeignClient)
+
+        val exception = assertThrows<BaseCodeNotFoundException>() {
+            exchangeRateService.getLatestByBaseCode(baseCode)
+        }
+        assertEquals("Base code $baseCode not found", exception.message)
     }
 
 }
