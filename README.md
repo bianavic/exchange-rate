@@ -112,11 +112,10 @@ GET CurrencyConversion http://localhost:9091/calculate/529.99
 
 
 ## Roadmap | Melhorias
-- Excluir a chave da api para evitar problema de segurança
-- Implementar testes: robot framework
-- Implementar logs ex: log4j, slf4j, log4j2
-- Sistema de análise de performance, monitoria, tracing ex: New Relic, Splunk, DataDog (avaliar gastos)
+- Excluir a chave da api (problemas de segurança)
+- Implementar logs
+- Sistema de análise de performance, monitoria, tracing
 - Ajustar casas decimais aos valores monetários.
-- Implementar uma pipeline ex: Jenkins
-- Análise de código ex: SonarQube
-- Organizar o código para produção: arquivo env ou application-properties (local, dev, qa e prod)
+- Implementar uma pipeline
+- Análise de código
+- Código para produção
