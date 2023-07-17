@@ -13,7 +13,7 @@ class ExchangeExceptionTests {
     private val error = ExchangeErrorDecoder()
 
     @Test
-    fun `test should return MalformedRequestException`() {
+    fun `test should return MalformedRequestException BAD REQUEST`() {
         // Arrange
         val response = createMockResponse(400)
 
@@ -26,7 +26,7 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return InvalidKeyException`() {
+    fun `test should return InvalidKeyException UNAUTHORIZED`() {
         // Arrange
         val response = createMockResponse(401)
 
@@ -39,7 +39,7 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return InactiveAccountException`() {
+    fun `test should return InactiveAccountException FORBIDDEN`() {
         // Arrange
         val response = createMockResponse(403)
 
@@ -52,7 +52,7 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return BaseCodeNotFoundException`() {
+    fun `test should return BaseCodeNotFoundException NOT FOUND`() {
         // Arrange
         val response = createMockResponse(404)
 
@@ -65,7 +65,7 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return QuotaReachedException`() {
+    fun `test should return QuotaReachedException TOO MANY REQUESTS`() {
         // Arrange
         val response = createMockResponse(429)
 
@@ -78,7 +78,7 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return UnknownErrorException`() {
+    fun `test should return UnknownErrorException INTERNAL SERVER ERROR`() {
         // Arrange
         val response = createMockResponse(500)
 

@@ -40,3 +40,5 @@ htmlReport
 
 /.idea
 /build
+
+/log4j2.log

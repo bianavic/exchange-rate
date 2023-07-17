@@ -14,4 +14,5 @@ class CalculatorApplication {
 			runApplication<CalculatorApplication>(*args)
 		}
 	}
+
 }
