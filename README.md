@@ -30,10 +30,10 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 ### ENDPOINTS
 
 
-- Conversão de moedas para EUR, INR e USD
+* ### Conversão
 
 ```http
-  GET http://localhost:9091/latest/BRL
+  GET http://localhost:9091/latest/{baseCode}
 ```
 
 | Parameter | Type     | Description                   |
@@ -51,11 +51,10 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 }
 ```
 
-
-- Cálculo e conversão de um valor conforme o câmbio do dia para as moedas: EUR, INR e USD
+* ### Cálculo
 
 ```http
-  GET http://localhost:9091/calculate/529.99
+  GET http://localhost:9091/calculate/{amount}
 ```
 
 | Parameter | Type     | Description                       |
@@ -73,7 +72,7 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 }
 ```
 
-### TESTE DE COBERTURA
+### COBERTURA DE TESTES
 ![Alt text](assets/codecoverage.png?raw=true "Teste de cobertura")
 
 ## Rodar Local (Linux Ubuntu)
@@ -93,7 +92,7 @@ Acessar o diretorio do projeto
 Build e Iniciar
 
 ```bash
-  ./gradlew build  bootRun
+  ./gradlew build bootRun
 ```
 
 #### Porta local
@@ -102,21 +101,24 @@ Build e Iniciar
   localhost:8001
 ```
 
-Realizar as chamadas pelo postman/insomnia
+Realizar as chamadas
 
+CONVERSÃO
 ```bash
+curl --location 'http://localhost:8001/latest/BRL'
+```
 
-Conversão
-GET CurrencyConversion http://localhost:9091/calculate/529.99
+CÁLCULO
+```bash
+curl --location 'http://localhost:8001/calculate/529.99'
 ```
 
 
 ## Roadmap | Melhorias
-- Excluir a chave da api para evitar problema de segurança
-- Implementar testes: robot framework
-- Implementar logs ex: log4j, slf4j, log4j2
-- Sistema de análise de performance, monitoria, tracing ex: New Relic, Splunk, DataDog (avaliar gastos)
+- Excluir a chave da api (problemas de segurança)
+- Implementar logs
+- Sistema de análise de performance, monitoria, tracing
 - Ajustar casas decimais aos valores monetários.
-- Implementar uma pipeline ex: Jenkins
-- Análise de código ex: SonarQube
-- Organizar o código para produção: arquivo env ou application-properties (local, dev, qa e prod)
+- Implementar uma pipeline
+- Análise de código
+- Código para produção
