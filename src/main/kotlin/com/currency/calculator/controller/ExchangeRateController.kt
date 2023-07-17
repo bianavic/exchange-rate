@@ -2,6 +2,7 @@ package com.currency.calculator.controller
 
 import com.currency.calculator.client.model.RatesResponse
 import com.currency.calculator.service.ExchangeRateService
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*
 class ExchangeRateController(
     private val exchangeRateService: ExchangeRateService,
 ) {
+
+    val logger = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping("/latest/{baseCode}")
     fun getLatestRatesFor(@PathVariable baseCode: String): ResponseEntity<RatesResponse> {

@@ -23,7 +23,6 @@ repositories {
 extra["springCloudVersion"] = "2022.0.3"
 
 dependencies {
-
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -39,6 +38,13 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
 	implementation("com.google.code.gson:gson:2.10.1")
+
+	implementation("org.springframework.boot:spring-boot-starter-log4j2")
+	modules {
+		module("org.springframework.boot:spring-boot-starter-logging") {
+			replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+		}
+	}
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
