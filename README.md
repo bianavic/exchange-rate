@@ -33,7 +33,7 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 * ### Conversão
 
 ```http
-  GET http://localhost:9091/latest/{baseCode}
+  GET http://localhost:8001/latest/{baseCode}
 ```
 
 | Parameter | Type     | Description                   |
@@ -54,7 +54,7 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 * ### Cálculo
 
 ```http
-  GET http://localhost:9091/calculate/{amount}
+  GET http://localhost:8001/calculate/{amount}
 ```
 
 | Parameter | Type     | Description                       |
