@@ -87,3 +87,18 @@ tasks.jacocoTestReport {
 
 	finalizedBy(tasks.jacocoTestReport)
 }
+
+tasks {
+	withType<Jar> {
+		enabled = true
+	}
+	val buildDockerCompose by registering {
+		dependsOn("build")
+	}
+	val dockerComposeUp by registering {
+		dependsOn(buildDockerCompose)
+	}
+	val dockerComposeDown by registering {
+		dependsOn(buildDockerCompose)
+	}
+}
