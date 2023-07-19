@@ -33,7 +33,7 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 * ### Conversão
 
 ```http
-  GET http://localhost:9091/latest/{baseCode}
+  GET http://localhost:8001/latest/{baseCode}
 ```
 
 | Parameter | Type     | Description                   |
@@ -54,7 +54,7 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 * ### Cálculo
 
 ```http
-  GET http://localhost:9091/calculate/{amount}
+  GET http://localhost:8001/calculate/{amount}
 ```
 
 | Parameter | Type     | Description                       |
@@ -75,7 +75,7 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 ### COBERTURA DE TESTES
 ![Alt text](assets/codecoverage.png?raw=true "Teste de cobertura")
 
-## Rodar Local (Linux Ubuntu)
+## Rodar Local (Linux Ubuntu) - com ou sem docker
 
 Clonar o projeto
 
@@ -83,13 +83,23 @@ Clonar o projeto
   git clone git@github.com:bianavic/converter.git
 ```
 
-Acessar o diretorio do projeto
+Acessar o diretório do projeto
 
 ```bash
   cd converter
 ```
 
-Build e Iniciar
+### [Docker] build and run
+
+```bash
+  docker build -t calculator:latest .
+```
+
+```bash
+  docker run -p 8001:8001 calculator
+```
+
+### [sem Docker] build and run
 
 ```bash
   ./gradlew build bootRun
@@ -101,7 +111,7 @@ Build e Iniciar
   localhost:8001
 ```
 
-Realizar as chamadas
+### Realizar as chamadas
 
 CONVERSÃO
 ```bash
@@ -112,7 +122,6 @@ CÁLCULO
 ```bash
 curl --location 'http://localhost:8001/calculate/529.99'
 ```
-
 
 ## Roadmap | Melhorias
 - Excluir a chave da api (problemas de segurança)

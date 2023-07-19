@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+
+  exchange:
+    container_name: calculator
+    image: calculator:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+
