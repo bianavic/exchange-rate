@@ -1,6 +1,6 @@
 # Conversor de Moedas
 
-Um serviço que permita que exponha o valor das mercadorias na moeda corrente do cliente.
+Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
 
 ## Regras de Negócio
 
@@ -15,14 +15,24 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 - Documentação
 - Testes automatizados.
 
-## Ferramentas
+## Ferramentas, bibliotecas
 
 - [Kotlin 1.8.22 (Java JDK 17)](https://kotlinlang.org/)
 - [sourceCompatibility Java 17](https://openjdk.org/projects/jdk/17/)
 - [Gradle 7.2](https://docs.gradle.org/7.2/release-notes.html)
 - [Spring Boot version "3.1.1-SNAPSHOT"](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/getting-started.html#getting-started.installing)
 - [Jakarta](https://beanvalidation.org/)
+- [Docker](https://docs.docker.com/)
+- [JaCoCo](https://www.jacoco.org/jacoco/trunk/doc/)
+- [OpenFeign](https://spring.io/projects/spring-cloud-openfeign)
+- [Gson](https://github.com/google/gson)
+- [Log4j2](https://logging.apache.org/log4j/2.x/)
+- [Wiremock](https://wiremock.org/)
+- [JUnit5](https://junit.org/junit5/)
+- [Mockk](https://mockk.io/)
 
+obs: LINUX UBUNTU
+ 
 ### API Externa
 
 - [Exhange Rate API](https://www.exchangerate-api.com/)
@@ -75,7 +85,7 @@ Um serviço que permita que exponha o valor das mercadorias na moeda corrente do
 ### COBERTURA DE TESTES
 ![Alt text](assets/codecoverage.png?raw=true "Teste de cobertura")
 
-## Rodar Local (Linux Ubuntu) - com ou sem docker
+## Rodar o projeto (Linux Ubuntu)
 
 Clonar o projeto
 
