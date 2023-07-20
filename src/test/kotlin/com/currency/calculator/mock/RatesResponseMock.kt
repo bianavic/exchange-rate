@@ -2,7 +2,7 @@ package com.currency.calculator.mock
 
 import com.currency.calculator.client.model.RatesResponse
 
-class RatesResponseMock {
+class RatesResponseMock() {
 
     fun getLatestRates(): RatesResponse {
         return RatesResponse(

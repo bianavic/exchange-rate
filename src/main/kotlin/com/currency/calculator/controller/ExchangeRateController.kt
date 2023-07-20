@@ -1,5 +1,7 @@
 package com.currency.calculator.controller
 
+import com.currency.calculator.client.exceptions.BaseCodeNotFoundException
+import com.currency.calculator.client.exceptions.MalformedRequestException
 import com.currency.calculator.client.model.RatesResponse
 import com.currency.calculator.service.ExchangeRateService
 import io.swagger.v3.oas.annotations.Operation
@@ -30,32 +32,29 @@ class ExchangeRateController(
         ApiResponse(responseCode = "404", description = "Base Code not found"),
     ])
     fun getLatestRatesFor(@PathVariable baseCode: String): ResponseEntity<RatesResponse> {
-
-        val response = exchangeRateService.getLatestByBaseCode(baseCode)
-        return if (response != null) ResponseEntity(response, HttpStatus.OK)
-        else ResponseEntity(HttpStatus.NOT_FOUND)
-
+        return try {
+            val response = exchangeRateService.getLatestByBaseCode(baseCode)
+            ResponseEntity(response, HttpStatus.OK)
+        } catch (e: BaseCodeNotFoundException) {
+            ResponseEntity(HttpStatus.NOT_FOUND)
+        }
     }
 
     @GetMapping("/calculate/{amount}")
-    @Operation(summary = "Calculate the rate conversion based on AMOUNT", description = "Retrieve a conversion rate list of registered rates based on its AMOUNT")
+    @Operation(
+        summary = "Calculate the rate conversion based on AMOUNT",
+        description = "Retrieve a conversion rate list of registered rates based on its AMOUNT")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Operation successful"),
         ApiResponse(responseCode = "400", description = "Malformed request")
     ])
     fun calculateCurrencyConversion(@PathVariable amount: Double): ResponseEntity<Map<String, Double>> {
-
-        val conversionRates = exchangeRateService.getLatestByBaseCode("BRL")
-
-        val convertAmounts = mutableMapOf<String, Double>()
-
-        convertAmounts["EUR"] = amount * conversionRates.EUR
-        convertAmounts["USD"] = amount * conversionRates.USD
-        convertAmounts["INR"] = amount * conversionRates.INR
-
-        return if (convertAmounts != null) ResponseEntity(convertAmounts, HttpStatus.OK)
-        else ResponseEntity(HttpStatus.BAD_REQUEST)
-
+        return try {
+            val convertAmounts = exchangeRateService.calculate(amount)
+            ResponseEntity(convertAmounts, HttpStatus.OK)
+        } catch (e: MalformedRequestException) {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
     }
 
 }

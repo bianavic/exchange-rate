@@ -1,3 +1,3 @@
 package com.currency.calculator.client.exceptions
 
-class BaseCodeNotFoundException(message: String) : Exception(message)
+class BaseCodeNotFoundException(message: String) : RuntimeException(message)
