@@ -60,7 +60,7 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
  
 ### API Externa
 
-- [Exhange Rate API](https://www.exchangerate-api.com/)
+- [Documentação ExhangeRate-API](https://www.exchangerate-api.com/docs/overview)
 
 ### ENDPOINTS
 
@@ -110,7 +110,7 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
 ### COBERTURA DE TESTES
 ![Alt text](assets/jacoco.png?raw=true "Teste de cobertura")
 
-## Rodar o projeto (Linux Ubuntu)
+## Configuração (ambiente Unix)
 
 Clonar o projeto
 
@@ -124,7 +124,7 @@ Acessar o diretório do projeto
   cd converter
 ```
 
-### [Docker] build and run
+Build and run
 
 ```bash
   docker build -t calculator:latest .
@@ -132,18 +132,6 @@ Acessar o diretório do projeto
 
 ```bash
   docker run -p 8001:8001 calculator
-```
-
-### [sem Docker] build and run
-
-```bash
-  ./gradlew build bootRun
-```
-
-#### Porta local
-
-```bash
-  localhost:8001
 ```
 
 ### Realizar as chamadas
@@ -159,10 +147,9 @@ curl --location 'http://localhost:8001/calculate/529.99'
 ```
 
 ## Documentação do Swagger
-Para visualizar a documentação da API, acesse: [Documentação do Swagger](http://localhost:8001/swagger-ui/index.html#/).
+Para visualizar a documentação da API e realizar testes com outros valores, acesse: [Documentação do Swagger](http://localhost:8001/swagger-ui/index.html#/)
 
 ## Roadmap | Melhorias
-- Excluir a chave da api (problemas de segurança)
 - Implementar logs
 - Sistema de análise de performance, monitoria, tracing
 - Ajustar casas decimais aos valores monetários.
