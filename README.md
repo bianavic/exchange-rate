@@ -2,6 +2,48 @@
 
 Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
 
+<p align="">
+     <a alt="Java">
+        <img src="https://img.shields.io/badge/Java-v17-blue.svg" />
+    </a>
+     <a alt="Kotlin">
+        <img src="https://img.shields.io/badge/Kotlin-v1.8.22-purple.svg" />
+    </a>
+    <a alt="Spring Boot">
+        <img src="https://img.shields.io/badge/Spring_Boot-3.1.1-F2F4F9?logo=spring-boot" />
+    </a>
+    <a alt="Gradle">
+        <img src="https://img.shields.io/badge/Gradle-v7.2-lightgreen.svg" />
+    </a>
+    <a alt="Docker">
+        <img src="https://img.shields.io/badge/Docker-2CA5E0?logoColor=white" />
+    </a>
+    <a alt="Swagger">
+        <img src="https://img.shields.io/badge/Swagger-85EA2D?logoColor=white" />
+    </a>
+    <a alt="OpenFeign">
+        <img src="https://img.shields.io/badge/OpenFeign-darkblue.svg" />
+    </a>
+    <a alt="JUnit">
+        <img src="https://img.shields.io/badge/Junit-5-25A162?logoColor=white" />
+    </a>
+   <a alt="Ubuntu">
+        <img src="https://img.shields.io/badge/Ubuntu-E95420?ubuntu&logoColor=white" />
+    </a>
+    <a alt="JaCoCo">
+        <img src="https://img.shields.io/badge/Jacoco-0.8.8-&logoColor=darkblue.svg" />
+    </a>
+    <a alt="Wiremock">
+        <img src="https://img.shields.io/badge/Wiremock-2.35.0-&logoColor=blue" />
+    </a>
+    <a alt="Mockk">
+        <img src="https://img.shields.io/badge/Mockk-1.13.5-darkblue.svg" />
+    </a>
+    <a alt="Mockito">
+        <img src="https://img.shields.io/badge/Mockito-5.2.0-darkblue.svg" />
+    </a>
+</p>
+
 ## Regras de Negócio
 
 - Ao efetuar a requisição, obter como resultado todos os valores nas moedas que atendemos para o valor do produto
@@ -15,23 +57,6 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
 - Documentação
 - Testes automatizados.
 
-## Ferramentas, bibliotecas
-
-- [Kotlin 1.8.22 (Java JDK 17)](https://kotlinlang.org/)
-- [sourceCompatibility Java 17](https://openjdk.org/projects/jdk/17/)
-- [Gradle 7.2](https://docs.gradle.org/7.2/release-notes.html)
-- [Spring Boot version "3.1.1-SNAPSHOT"](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/getting-started.html#getting-started.installing)
-- [Jakarta](https://beanvalidation.org/)
-- [Docker](https://docs.docker.com/)
-- [JaCoCo](https://www.jacoco.org/jacoco/trunk/doc/)
-- [OpenFeign](https://spring.io/projects/spring-cloud-openfeign)
-- [Gson](https://github.com/google/gson)
-- [Log4j2](https://logging.apache.org/log4j/2.x/)
-- [Wiremock](https://wiremock.org/)
-- [JUnit5](https://junit.org/junit5/)
-- [Mockk](https://mockk.io/)
-
-obs: LINUX UBUNTU
  
 ### API Externa
 
@@ -83,7 +108,7 @@ obs: LINUX UBUNTU
 ```
 
 ### COBERTURA DE TESTES
-![Alt text](assets/codecoverage.png?raw=true "Teste de cobertura")
+![Alt text](assets/jacoco.png?raw=true "Teste de cobertura")
 
 ## Rodar o projeto (Linux Ubuntu)
 
@@ -132,6 +157,9 @@ CÁLCULO
 ```bash
 curl --location 'http://localhost:8001/calculate/529.99'
 ```
+
+## Documentação do Swagger
+Para visualizar a documentação da API, acesse: [Documentação do Swagger](http://localhost:8001/swagger-ui/index.html#/).
 
 ## Roadmap | Melhorias
 - Excluir a chave da api (problemas de segurança)
