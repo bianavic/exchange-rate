@@ -25,26 +25,24 @@ extra["springCloudVersion"] = "2022.0.3"
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-
-	implementation ("jakarta.validation:jakarta.validation-api")
-
-	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-	implementation("io.github.openfeign:feign-core:12.3")
-	implementation("io.github.openfeign:feign-gson:12.3")
-	implementation("io.github.openfeign:feign-httpclient:12.3")
-
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-
-	implementation("com.google.code.gson:gson:2.10.1")
-
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-log4j2")
 	modules {
 		module("org.springframework.boot:spring-boot-starter-logging") {
 			replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
 		}
 	}
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+	implementation("io.github.openfeign:feign-core:12.3")
+	implementation("io.github.openfeign:feign-gson:12.3")
+	implementation("io.github.openfeign:feign-httpclient:12.3")
+
+	implementation ("jakarta.validation:jakarta.validation-api")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+	implementation("com.google.code.gson:gson:2.10.1")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
