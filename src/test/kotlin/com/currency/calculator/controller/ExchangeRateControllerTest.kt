@@ -8,7 +8,7 @@ import org.mockito.Mockito
 import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.TestPropertySource
@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(ExchangeRateController::class)
 @TestPropertySource(properties = ["exchange.url=https://v6.exchangerate-api.com/v6/test-api-key"])
 internal class ExchangeRateControllerTest {
 

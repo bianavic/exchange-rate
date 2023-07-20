@@ -1,6 +1,7 @@
 package com.currency.calculator.service
 
 import com.currency.calculator.client.exceptions.BaseCodeNotFoundException
+import com.currency.calculator.client.exceptions.MalformedRequestException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
@@ -27,6 +28,10 @@ class ExchangeRateServiceImpl(
     }
 
     override fun calculate(amount: Double): Map<String, Double> {
+
+        if (amount <= 0.0) {
+            throw MalformedRequestException("Invalid amount: $amount")
+        }
 
         val conversionRates = getLatestByBaseCode("BRL")
         val convertAmounts = mutableMapOf<String, Double>()
