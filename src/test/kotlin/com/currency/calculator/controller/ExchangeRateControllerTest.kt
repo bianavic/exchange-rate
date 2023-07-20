@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
@@ -34,6 +36,7 @@ internal class ExchangeRateControllerTest {
     @Test
     @DisplayName("should get latest rates for BRL money")
     fun getLatestRatesFor() {
+
         val ratesResponseMock = RatesResponseMock()
         val expectedResponse = """
             {
@@ -59,24 +62,24 @@ internal class ExchangeRateControllerTest {
     fun calculateCurrencyConversion() {
 
         val amount = 529.99
-        val baseCode = "BRL"
         val ratesResponseMock = RatesResponseMock()
         val rates = ratesResponseMock.getLatestRates()
 
-        Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(rates)
-
-        val exchangeRateController = ExchangeRateController(exchangeRateService)
-
-        val responseEntity = exchangeRateController.calculateCurrencyConversion(amount)
-        val actualResponse = responseEntity.body
-
-        Assertions.assertNotNull(actualResponse)
         val expectedResponse = mapOf(
             "EUR" to (amount * rates.EUR),
             "USD" to (amount * rates.USD),
             "INR" to (amount * rates.INR)
         )
-        Assertions.assertEquals(expectedResponse, actualResponse)
+
+        Mockito.`when`(exchangeRateService.calculate(amount)).thenReturn(expectedResponse)
+
+        val response = mockMvc.perform(MockMvcRequestBuilders.get("/calculate/$amount"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
+
+        val actualResponse = response.response.contentAsString
+        JSONAssert.assertEquals(expectedResponse.toString(), actualResponse, true)
     }
 
 }

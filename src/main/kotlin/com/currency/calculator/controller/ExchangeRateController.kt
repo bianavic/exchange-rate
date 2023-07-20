@@ -45,14 +45,7 @@ class ExchangeRateController(
     ])
     fun calculateCurrencyConversion(@PathVariable amount: Double): ResponseEntity<Map<String, Double>> {
 
-        val conversionRates = exchangeRateService.getLatestByBaseCode("BRL")
-
-        val convertAmounts = mutableMapOf<String, Double>()
-
-        convertAmounts["EUR"] = amount * conversionRates.EUR
-        convertAmounts["USD"] = amount * conversionRates.USD
-        convertAmounts["INR"] = amount * conversionRates.INR
-
+        val convertAmounts = exchangeRateService.calculate(amount)
         return if (convertAmounts != null) ResponseEntity(convertAmounts, HttpStatus.OK)
         else ResponseEntity(HttpStatus.BAD_REQUEST)
 

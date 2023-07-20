@@ -32,7 +32,7 @@ class ExchangeRateServiceTest {
         val exchangeFeignClient = mockk<ExchangeFeignClient>()
         every { exchangeFeignClient.getLatestExchangeFor(baseCode) } returns response
 
-        val exchangeRateService = ExchangeRateService(exchangeFeignClient)
+        val exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient)
 
         // Act
         val result = exchangeRateService.getLatestByBaseCode(baseCode)
@@ -49,7 +49,7 @@ class ExchangeRateServiceTest {
         val exchangeFeignClient = mockk<ExchangeFeignClient>()
         every { exchangeFeignClient.getLatestExchangeFor(baseCode) } throws Exception("Base code not found")
 
-        val exchangeRateService = ExchangeRateService(exchangeFeignClient)
+        val exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient)
 
         val exception = assertThrows<BaseCodeNotFoundException> {
             exchangeRateService.getLatestByBaseCode(baseCode)
