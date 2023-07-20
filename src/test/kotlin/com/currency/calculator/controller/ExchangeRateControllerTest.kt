@@ -2,8 +2,6 @@ package com.currency.calculator.controller
 
 import com.currency.calculator.mock.RatesResponseMock
 import com.currency.calculator.service.ExchangeRateService
-import com.github.tomakehurst.wiremock.WireMockServer
-import com.google.gson.Gson
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -19,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["exchange.url=https://v6.exchangerate-api.com/v6/test-api-key"])
 internal class ExchangeRateControllerTest {
 
     companion object {
