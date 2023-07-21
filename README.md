@@ -60,7 +60,8 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
  
 ### API Externa
 
-- [Documentação ExhangeRate-API](https://www.exchangerate-api.com/docs/overview)
+- [Documentação API](https://www.exchangerate-api.com/docs/overview)
+- [Cadastro API](https://app.exchangerate-api.com/sign-up) : obter chave
 
 ### ENDPOINTS
 
@@ -129,11 +130,11 @@ Build and run
 ```bash
   docker build -t calculator:latest .
 ```
+obs: abaixo, substitua *YOUR_EXCHANGE_API_KEY* pela chave adquirida ao realizar o cadastro na API
 
 ```bash
-  docker run -p 8001:8001 calculator
+docker run -p 8001:8001 -e EXCHANGE_API_KEY=YOUR_EXCHANGE_API_KEY calculator
 ```
-
 ### Realizar as chamadas
 
 CONVERSÃO

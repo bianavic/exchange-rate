@@ -8,12 +8,15 @@ import com.currency.calculator.client.model.RatesResponse
 import com.currency.calculator.client.model.formatRatesResponse
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class ExchangeRateServiceImpl(
-    private val exchangeFeignClient: ExchangeFeignClient
-    ) : ExchangeRateService {
+    private val exchangeFeignClient: ExchangeFeignClient,
+    @Value("\${exchange.url}")
+    private val exchangeApiUrl: String
+) : ExchangeRateService {
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -22,7 +25,9 @@ class ExchangeRateServiceImpl(
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
         try {
-            val response = exchangeFeignClient.getLatestExchangeFor(baseCode)
+            val apiUrlWithApiKey = exchangeApiUrl.replace("\${EXCHANGE_API_KEY}", System.getenv("EXCHANGE_API_KEY"))
+
+            val response = exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode)
             val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
 
             ratesResponse = exchangeRatesResponse.ratesResponse
