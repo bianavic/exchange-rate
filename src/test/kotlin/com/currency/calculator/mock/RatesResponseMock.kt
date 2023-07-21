@@ -7,9 +7,9 @@ class RatesResponseMock() {
     fun getLatestRates(): RatesResponse {
         return RatesResponse(
             BRL = 1.0,
-            EUR = 0.186,
-            INR = 17.0755,
-            USD = 0.208
+            EUR = 0.18,
+            INR = 17.07,
+            USD = 0.20
         )
     }
 

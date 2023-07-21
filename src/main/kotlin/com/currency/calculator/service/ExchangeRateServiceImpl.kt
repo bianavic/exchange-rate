@@ -5,6 +5,7 @@ import com.currency.calculator.client.exceptions.MalformedRequestException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
+import com.currency.calculator.client.model.formatRatesResponse
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.springframework.stereotype.Service
@@ -16,12 +17,18 @@ class ExchangeRateServiceImpl(
 
     private val json = Json { ignoreUnknownKeys = true }
 
+    lateinit var ratesResponse: RatesResponse
+
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
         try {
             val response = exchangeFeignClient.getLatestExchangeFor(baseCode)
             val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
-            return exchangeRatesResponse.ratesResponse
+
+            ratesResponse = exchangeRatesResponse.ratesResponse
+            ratesResponse.formatRatesResponse(2) // Format the rates response
+
+            return ratesResponse
         } catch (e: Exception) {
             throw BaseCodeNotFoundException("Base code $baseCode not found")
         }

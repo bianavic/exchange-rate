@@ -14,3 +14,12 @@ data class RatesResponse(
     @SerialName("USD")
     var USD: Double
 )
+
+fun RatesResponse.formatRatesResponse(scale: Int) {
+    BRL = BRL.format(scale).toDouble()
+    EUR = EUR.format(scale).toDouble()
+    INR = INR.format(scale).toDouble()
+    USD = USD.format(scale).toDouble()
+}
+
+fun Double.format(scale: Int) = "%.${scale}f".format(this)
