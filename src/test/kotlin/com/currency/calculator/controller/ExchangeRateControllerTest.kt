@@ -2,7 +2,10 @@ package com.currency.calculator.controller
 
 import com.currency.calculator.mock.RatesResponseMock
 import com.currency.calculator.service.ExchangeRateService
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
 import org.skyscreamer.jsonassert.JSONAssert
@@ -20,7 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(ExchangeRateController::class)
-@TestPropertySource(properties = ["exchange.url=https://v6.exchangerate-api.com/v6/test-api-key"])
+@TestPropertySource(properties = ["classpath:application-test.properties"])
 internal class ExchangeRateControllerTest {
 
     companion object {
@@ -71,7 +74,7 @@ internal class ExchangeRateControllerTest {
             "INR" to (amount * rates.INR)
         )
 
-        Mockito.`when`(exchangeRateService.calculate(amount)).thenReturn(expectedResponse)
+        Mockito.`when`(exchangeRateService.getAmountCalculated(amount)).thenReturn(expectedResponse)
 
         val response = mockMvc.perform(MockMvcRequestBuilders.get("/calculate/$amount"))
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -79,7 +82,14 @@ internal class ExchangeRateControllerTest {
             .andReturn()
 
         val actualResponse = response.response.contentAsString
+
+        val gson = Gson()
+        val actualMapType = object : TypeToken<Map<String, Double>>() {}.type
+        val formattedResponse: Map<String, Double> = gson.fromJson(actualResponse, actualMapType)
+
         JSONAssert.assertEquals(expectedResponse.toString(), actualResponse, true)
+
+        assertEquals(expectedResponse, formattedResponse)
     }
 
 }

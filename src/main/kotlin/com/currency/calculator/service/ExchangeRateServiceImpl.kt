@@ -5,7 +5,8 @@ import com.currency.calculator.client.exceptions.MalformedRequestException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
-import com.currency.calculator.client.model.formatRatesResponse
+import com.currency.calculator.client.model.formatAmountToTwoDecimalPlaces
+import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.springframework.beans.factory.annotation.Value
@@ -21,7 +22,6 @@ class ExchangeRateServiceImpl(
     private val json = Json { ignoreUnknownKeys = true }
 
     lateinit var ratesResponse: RatesResponse
-
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
         try {
@@ -31,7 +31,7 @@ class ExchangeRateServiceImpl(
             val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
 
             ratesResponse = exchangeRatesResponse.ratesResponse
-            ratesResponse.formatRatesResponse(2) // Format the rates response
+            ratesResponse.formatRatesToTwoDecimalPlaces(2)
 
             return ratesResponse
         } catch (e: Exception) {
@@ -39,19 +39,28 @@ class ExchangeRateServiceImpl(
         }
     }
 
-    override fun calculate(amount: Double): Map<String, Double> {
+    override fun getAmountCalculated(amount: Double): Map<String, Double> {
 
         if (amount <= 0.0) {
             throw MalformedRequestException("Invalid amount: $amount")
         }
 
         val conversionRates = getLatestByBaseCode("BRL")
+
+        return calculate(amount, conversionRates)
+    }
+
+    private fun calculate(
+        amount: Double,
+        conversionRates: RatesResponse
+    ): MutableMap<String, Double> {
         val convertAmounts = mutableMapOf<String, Double>()
 
         convertAmounts["EUR"] = amount * conversionRates.EUR
         convertAmounts["USD"] = amount * conversionRates.USD
         convertAmounts["INR"] = amount * conversionRates.INR
 
+        convertAmounts.formatAmountToTwoDecimalPlaces(2)
         return convertAmounts
     }
 

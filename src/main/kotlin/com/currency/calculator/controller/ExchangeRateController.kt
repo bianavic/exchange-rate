@@ -50,7 +50,7 @@ class ExchangeRateController(
     ])
     fun calculateCurrencyConversion(@PathVariable amount: Double): ResponseEntity<Map<String, Double>> {
         return try {
-            val convertAmounts = exchangeRateService.calculate(amount)
+            val convertAmounts = exchangeRateService.getAmountCalculated(amount)
             ResponseEntity(convertAmounts, HttpStatus.OK)
         } catch (e: MalformedRequestException) {
             ResponseEntity(HttpStatus.BAD_REQUEST)
