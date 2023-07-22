@@ -48,12 +48,15 @@ class ExchangeRateController(
         ApiResponse(responseCode = "200", description = "Operation successful"),
         ApiResponse(responseCode = "400", description = "Malformed request")
     ])
-    fun calculateCurrencyConversion(@PathVariable amount: Double): ResponseEntity<Map<String, Double>> {
+    fun calculateCurrencyConversion(@PathVariable amount: Double): ResponseEntity<Any> {
         return try {
+            if (amount <= 0.0) {
+                throw MalformedRequestException("Invalid amount: $amount")
+            }
             val convertAmounts = exchangeRateService.getAmountCalculated(amount)
             ResponseEntity(convertAmounts, HttpStatus.OK)
         } catch (e: MalformedRequestException) {
-            ResponseEntity(HttpStatus.BAD_REQUEST)
+            ResponseEntity.badRequest().body(e.message)
         }
     }
 
