@@ -1,7 +1,6 @@
 package com.currency.calculator.service
 
-import com.currency.calculator.client.exceptions.BaseCodeNotFoundException
-import com.currency.calculator.client.exceptions.MalformedRequestException
+import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
@@ -24,22 +23,19 @@ class ExchangeRateServiceImpl(
     lateinit var ratesResponse: RatesResponse
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
-        try {
-            val apiUrlWithApiKey = exchangeApiUrl.replace("\${EXCHANGE_API_KEY}", System.getenv("EXCHANGE_API_KEY"))
+        val apiUrlWithApiKey = exchangeApiUrl.replace("\${EXCHANGE_API_KEY}", System.getenv("EXCHANGE_API_KEY"))
 
-            val response = exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode)
-            val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
+        val response = exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode)
+        val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
 
-            ratesResponse = exchangeRatesResponse.ratesResponse
-            ratesResponse.formatRatesToTwoDecimalPlaces(2)
+        val ratesResponse = exchangeRatesResponse.ratesResponse
+        ratesResponse.formatRatesToTwoDecimalPlaces(2)
 
-            return ratesResponse
-        } catch (e: Exception) {
-            throw BaseCodeNotFoundException("Base code $baseCode not found")
-        }
+        return ratesResponse
     }
 
     override fun getAmountCalculated(amount: Double): Map<String, Double> {
+
         if (amount <= 0) {
             throw MalformedRequestException("Invalid amount: $amount")
         }

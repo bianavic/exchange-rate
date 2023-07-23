@@ -1,24 +1,25 @@
 package com.currency.calculator.client
 
-import com.currency.calculator.client.error.ExchangeErrorDecoder
-import com.currency.calculator.client.exceptions.*
+import com.currency.calculator.client.error.*
 import feign.Response
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
+import org.junit.jupiter.api.assertThrows
+import org.springframework.http.HttpStatus
 
 class ExchangeExceptionTests {
 
-    private val error = ExchangeErrorDecoder()
+    private val errorDecoder = ExchangeErrorDecoder()
 
     @Test
-    fun `test should return MalformedRequestException BAD REQUEST`() {
+    fun `test should return MalformedRequestException for BAD REQUEST`() {
         // Arrange
-        val response = createMockResponse(400)
+        val response = createMockResponse(HttpStatus.BAD_REQUEST.value())
 
         // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("", response)
 
         // Assert
         assertEquals(MalformedRequestException::class.java, exception.javaClass)
@@ -26,12 +27,12 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return InvalidKeyException UNAUTHORIZED`() {
+    fun `test should return InvalidKeyException for UNAUTHORIZED`() {
         // Arrange
-        val response = createMockResponse(401)
+        val response = createMockResponse(HttpStatus.UNAUTHORIZED.value())
 
         // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("", response)
 
         // Assert
         assertEquals(InvalidKeyException::class.java, exception.javaClass)
@@ -39,12 +40,12 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return InactiveAccountException FORBIDDEN`() {
+    fun `test should return InactiveAccountException for FORBIDDEN`() {
         // Arrange
-        val response = createMockResponse(403)
+        val response = createMockResponse(HttpStatus.FORBIDDEN.value())
 
         // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("", response)
 
         // Assert
         assertEquals(InactiveAccountException::class.java, exception.javaClass)
@@ -53,24 +54,38 @@ class ExchangeExceptionTests {
 
     @Test
     fun `test should return BaseCodeNotFoundException NOT FOUND`() {
-        // Arrange
-        val response = createMockResponse(404)
+        val methodKey = "ExchangeFeignClient#getLatestExchangeFor" // Without base code
+        val response = createMockResponse(HttpStatus.NOT_FOUND.value())
+        val errorDecoder = ExchangeErrorDecoder()
 
-        // Act
-        val exception = error.decode("", response)
-
-        // Assert
-        assertEquals(BaseCodeNotFoundException::class.java, exception.javaClass)
-        assertEquals("Base code not found", exception.message)
+        // Act and Assert
+        val exception = assertThrows<BaseCodeNotFoundException> {
+            errorDecoder.decode(methodKey, response)
+        }
+        assertEquals("defaultBaseCode", exception.message)
     }
 
     @Test
-    fun `test should return QuotaReachedException TOO MANY REQUESTS`() {
+    fun `test should throw BaseCodeNotFoundException with default base code`() {
         // Arrange
-        val response = createMockResponse(429)
+        val methodKey = "ExchangeFeignClient#getLatestExchangeFor" // Without base code
+        val response = createMockResponse(HttpStatus.NOT_FOUND.value())
+        val errorDecoder = ExchangeErrorDecoder()
+
+        // Act and Assert
+        val exception = assertThrows<BaseCodeNotFoundException> {
+            errorDecoder.decode(methodKey, response)
+        }
+        assertEquals("defaultBaseCode", exception.message)
+    }
+
+    @Test
+    fun `test should return QuotaReachedException for TOO MANY REQUESTS`() {
+        // Arrange
+        val response = createMockResponse(HttpStatus.TOO_MANY_REQUESTS.value())
 
         // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("", response)
 
         // Assert
         assertEquals(QuotaReachedException::class.java, exception.javaClass)
@@ -78,12 +93,12 @@ class ExchangeExceptionTests {
     }
 
     @Test
-    fun `test should return UnknownErrorException INTERNAL SERVER ERROR`() {
+    fun `test should return UnknownErrorException for INTERNAL SERVER ERROR`() {
         // Arrange
-        val response = createMockResponse(500)
+        val response = createMockResponse(HttpStatus.INTERNAL_SERVER_ERROR.value())
 
         // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("", response)
 
         // Assert
         assertEquals(UnknownErrorException::class.java, exception.javaClass)
@@ -91,8 +106,8 @@ class ExchangeExceptionTests {
     }
 
     private fun createMockResponse(statusCode: Int): Response {
-        val response = mock(Response::class.java)
-        `when`(response.status()).thenReturn(statusCode)
+        val response = mockk<Response>()
+        every { response.status() } returns statusCode
         return response
     }
 

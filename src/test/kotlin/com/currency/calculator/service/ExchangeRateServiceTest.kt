@@ -61,27 +61,27 @@ class ExchangeRateServiceTest {
         assertEquals(expectedConversionRates, actualRatesResponse)
     }
 
-        @Test
-        fun `should throw BaseCodeNotFoundException when base code is not found`() {
+    @Test
+    fun `should throw BaseCodeNotFoundException when base code is not found`() {
 
-            val invalidBaseCode = "INVALID_BASE_CODE"
+        val invalidBaseCode = "INVALID_BASE_CODE"
 
-            val exchangeFeignClient = mockk<ExchangeFeignClient>()
-            val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/\${EXCHANGE_API_KEY}"
+        val exchangeFeignClient = mockk<ExchangeFeignClient>()
+        val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/\${EXCHANGE_API_KEY}"
 
-            every {
-                exchangeFeignClient.getLatestExchangeFor(
-                    any(),
-                    invalidBaseCode
-                )
-            } throws RuntimeException("Base code not found")
+        every {
+            exchangeFeignClient.getLatestExchangeFor(
+                any(),
+                invalidBaseCode
+            )
+        } throws RuntimeException("Base code not found")
 
-            val exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl)
+        val exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl)
 
-            assertThrows<BaseCodeNotFoundException> {
-                exchangeRateService.getLatestByBaseCode(invalidBaseCode)
-            }
+        assertThrows<BaseCodeNotFoundException> {
+            exchangeRateService.getLatestByBaseCode(invalidBaseCode)
         }
+    }
 
     @Test
     fun `should calculate currency conversion`() {

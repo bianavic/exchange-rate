@@ -1,7 +1,7 @@
 package com.currency.calculator.controller
 
-import com.currency.calculator.client.exceptions.BaseCodeNotFoundException
-import com.currency.calculator.client.exceptions.MalformedRequestException
+import com.currency.calculator.client.error.ExchangeRateException
+import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.model.RatesResponse
 import com.currency.calculator.service.ExchangeRateService
 import io.swagger.v3.oas.annotations.Operation
@@ -35,7 +35,7 @@ class ExchangeRateController(
         return try {
             val response = exchangeRateService.getLatestByBaseCode(baseCode)
             ResponseEntity(response, HttpStatus.OK)
-        } catch (e: BaseCodeNotFoundException) {
+        } catch (e: ExchangeRateException) {
             ResponseEntity(HttpStatus.NOT_FOUND)
         }
     }
@@ -55,7 +55,7 @@ class ExchangeRateController(
             }
             val convertAmounts = exchangeRateService.getAmountCalculated(amount)
             ResponseEntity(convertAmounts, HttpStatus.OK)
-        } catch (e: MalformedRequestException) {
+        } catch (e: ExchangeRateException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
