@@ -1,6 +1,7 @@
 package com.currency.calculator.service
 
-import com.currency.calculator.client.exceptions.BaseCodeNotFoundException
+import com.currency.calculator.client.error.BaseCodeNotFoundException
+import com.currency.calculator.client.error.ExchangeErrorDecoder
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
@@ -8,6 +9,7 @@ import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
 import com.currency.calculator.controller.ExchangeRateController
 import com.currency.calculator.mock.RatesResponseMock
 import com.google.gson.Gson
+import feign.Response
 import io.mockk.*
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -17,6 +19,7 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
@@ -42,13 +45,12 @@ class ExchangeRateServiceTest {
 
     @Test
     fun `should return latest rates for a valid base code`() {
-        // Arrange
+
         val baseCode = "BRL"
         val expectedConversionRates = ratesResponseMock.getLatestRates()
 
         Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(expectedConversionRates)
 
-        // Act & Assert
         val result = mockMvc.perform(get("/latest/$baseCode"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -64,23 +66,14 @@ class ExchangeRateServiceTest {
     @Test
     fun `should throw BaseCodeNotFoundException when base code is not found`() {
 
-        val invalidBaseCode = "INVALID_BASE_CODE"
+        val methodKey = "ExchangeFeignClient#getLatestExchangeFor"
+        val response = createMockResponse(HttpStatus.NOT_FOUND.value())
+        val errorDecoder = ExchangeErrorDecoder()
 
-        val exchangeFeignClient = mockk<ExchangeFeignClient>()
-        val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/\${EXCHANGE_API_KEY}"
-
-        every {
-            exchangeFeignClient.getLatestExchangeFor(
-                any(),
-                invalidBaseCode
-            )
-        } throws RuntimeException("Base code not found")
-
-        val exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl)
-
-        assertThrows<BaseCodeNotFoundException> {
-            exchangeRateService.getLatestByBaseCode(invalidBaseCode)
+        val exception = assertThrows<BaseCodeNotFoundException> {
+            errorDecoder.decode(methodKey, response)
         }
+        assertEquals("defaultBaseCode", exception.message)
     }
 
     @Test
@@ -91,11 +84,8 @@ class ExchangeRateServiceTest {
         val rates = ratesResponseMock.getLatestRates()
 
         every { exchangeFeignClient.getLatestExchangeFor(any(), any()) } returns getMockApiResponse(rates)
-
         val exchangeRateService = spyk(ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl))
-
         every { exchangeRateService.getLatestByBaseCode(baseCode) } returns rates
-
         val result = exchangeRateService.getAmountCalculated(amount)
 
         val expectedResponse = mapOf(
@@ -103,7 +93,6 @@ class ExchangeRateServiceTest {
             "USD" to (amount * rates.USD),
             "INR" to (amount * rates.INR)
         )
-
         val formattedExpectedResponse = expectedResponse.mapValues { (_, value) -> String.format("%.2f", value).toDouble() }
 
         assertEquals(formattedExpectedResponse, result)
@@ -129,11 +118,35 @@ class ExchangeRateServiceTest {
     }
 
     @Test
+    fun `test formatRatesToTwoDecimalPlaces with scale 2`() {
+
+        val exchangeFeignClient = mockk<ExchangeFeignClient>()
+        val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/test-api-key"
+        val json = Json { ignoreUnknownKeys = true }
+
+        val ratesResponse = RatesResponse(1.234567, 2.987654, 3.0, 4.9999)
+        val exchangeRatesResponse = ExchangeRatesResponse("BRL", ratesResponse)
+        val responseJson = json.encodeToString(ExchangeRatesResponse.serializer(), exchangeRatesResponse)
+
+        every {
+            exchangeFeignClient.getLatestExchangeFor(any(), any())
+        } returns responseJson
+
+        val exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl)
+
+        val result = exchangeRateService.getLatestByBaseCode("BRL")
+
+        assertEquals(1.23, result.BRL)
+        assertEquals(2.99, result.EUR)
+        assertEquals(3.0, result.INR)
+        assertEquals(5.0, result.USD)
+    }
+
+    @Test
     fun `should throw MalformedRequestException when amount is invalid`() {
 
         val invalidAmount = -100.0
 
-        // Act & Assert
         mockMvc.perform(get("/calculate/$invalidAmount"))
             .andExpect(status().isBadRequest)
             .andExpect(content().string("Invalid amount: -100.0"))
@@ -151,6 +164,12 @@ class ExchangeRateServiceTest {
                 }
             }
         """.trimIndent()
+    }
+
+    private fun createMockResponse(statusCode: Int): Response {
+        val response = mockk<Response>()
+        every { response.status() } returns statusCode
+        return response
     }
 
 }
