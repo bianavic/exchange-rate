@@ -40,8 +40,7 @@ class ExchangeRateServiceImpl(
     }
 
     override fun getAmountCalculated(amount: Double): Map<String, Double> {
-
-        if (amount <= 0.0) {
+        if (amount <= 0) {
             throw MalformedRequestException("Invalid amount: $amount")
         }
 

@@ -1,6 +1,6 @@
 # Conversor de Moedas
 
-Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
+Um serviço que converte as moedas EUR, INR, USD para REAIS com base em um valor fornecido.
 
 <p align="">
    <a alt="Ubuntu">

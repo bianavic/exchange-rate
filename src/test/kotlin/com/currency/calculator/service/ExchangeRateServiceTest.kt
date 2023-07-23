@@ -40,7 +40,6 @@ class ExchangeRateServiceTest {
     val exchangeFeignClient = mockk<ExchangeFeignClient>()
     val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/test-api-key"
 
-
     @Test
     fun `should return latest rates for a valid base code`() {
         // Arrange
