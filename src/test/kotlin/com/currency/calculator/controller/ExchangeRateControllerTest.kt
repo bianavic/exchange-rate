@@ -50,7 +50,7 @@ internal class ExchangeRateControllerTest {
             }
         """.trimIndent()
 
-        val mockResponse = ratesResponseMock.getLatestRates()
+        val mockResponse = ratesResponseMock.getLatestMockRates()
         Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(mockResponse)
 
         val request = MockMvcRequestBuilders.get("/latest/$baseCode")
@@ -66,7 +66,7 @@ internal class ExchangeRateControllerTest {
 
         val amount = 529.99
         val ratesResponseMock = RatesResponseMock()
-        val rates = ratesResponseMock.getLatestRates()
+        val rates = ratesResponseMock.getLatestMockRates()
 
         val expectedResponse = mapOf(
             "EUR" to (amount * rates.EUR),

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ExchangeRatesResponse(
     @SerialName("base_code")
-    val baseCode: String = "",
+    val baseCode: String,
     @SerialName("conversion_rates")
-    val ratesResponse: RatesResponse
+    var ratesResponse: RatesResponse
 )

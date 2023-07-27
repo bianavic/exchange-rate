@@ -23,8 +23,13 @@ fun RatesResponse.formatRatesToTwoDecimalPlaces(scale: Int) {
 }
 
 fun MutableMap<String, Double>.formatAmountToTwoDecimalPlaces(scale: Int) {
-    this.forEach { (key, value) ->
-        this[key] = value.format(scale).toDouble() }
+    this.forEach { (currency, amount) ->
+        this[currency] = amount.format(scale).toDouble() }
 }
 
 fun Double.format(scale: Int) = "%.${scale}f".format(this)
+
+fun isBaseCodeValid(baseCode: String): Boolean {
+    val validBaseCodes = listOf("BRL", "EUR", "INR", "USD")
+    return baseCode in validBaseCodes
+}

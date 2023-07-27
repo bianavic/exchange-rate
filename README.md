@@ -142,7 +142,7 @@ CONVERSÃO
 curl --location 'http://localhost:8001/latest/BRL'
 ```
 
-obs: abaixo você poide substituir o 529.99 por qualquer outro valor bigdecimal. 
+obs: abaixo você pode substituir o 529.99 por qualquer outro valor bigdecimal. 
 CÁLCULO
 ```bash
 curl --location 'http://localhost:8001/calculate/529.99'
