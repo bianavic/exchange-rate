@@ -1,8 +1,9 @@
 package com.currency.calculator.controller
 
-import com.currency.calculator.client.error.UnsupportedCodeException
 import com.currency.calculator.client.error.ExchangeRateException
 import com.currency.calculator.client.error.MalformedRequestException
+import com.currency.calculator.client.error.UnsupportedCodeException
+import com.currency.calculator.client.model.CurrencyCodeValidator
 import com.currency.calculator.client.model.RatesResponse
 import com.currency.calculator.service.ExchangeRateService
 import io.swagger.v3.oas.annotations.Operation
@@ -38,6 +39,9 @@ class ExchangeRateController(
     fun getLatestRatesFor(@PathVariable baseCode: String): ResponseEntity<RatesResponse> {
         logger.info("getting exchange rate by baseCode: {}", baseCode)
         return try {
+            if (!CurrencyCodeValidator.isValidBaseCode(baseCode)) {
+                throw UnsupportedCodeException("Unsupported currency code: $baseCode")
+            }
             val response = exchangeRateService.getLatestByBaseCode(baseCode)
             ResponseEntity(response, HttpStatus.OK)
         } catch (e: UnsupportedCodeException) {
@@ -59,7 +63,7 @@ class ExchangeRateController(
         logger.info("Calculating currency conversion based on amount {}", amount)
         return try {
             if (amount <= 0.0) {
-                throw MalformedRequestException("Invalid amount: $amount")
+                throw MalformedRequestException("Malformed request: $amount")
             }
             val convertAmounts = exchangeRateService.getAmountCalculated(amount)
             ResponseEntity(convertAmounts, HttpStatus.OK)

@@ -28,8 +28,3 @@ fun MutableMap<String, Double>.formatAmountToTwoDecimalPlaces(scale: Int) {
 }
 
 fun Double.format(scale: Int) = "%.${scale}f".format(this)
-
-fun isBaseCodeValid(baseCode: String): Boolean {
-    val validBaseCodes = listOf("BRL", "EUR", "INR", "USD")
-    return baseCode in validBaseCodes
-}

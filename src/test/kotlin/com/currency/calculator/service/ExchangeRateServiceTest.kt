@@ -1,7 +1,6 @@
 package com.currency.calculator.service
 
-import com.currency.calculator.client.error.BaseCodeNotFoundException
-import com.currency.calculator.client.error.ExchangeErrorDecoder
+import com.currency.calculator.client.error.UnsupportedCodeException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
@@ -9,17 +8,18 @@ import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
 import com.currency.calculator.controller.ExchangeRateController
 import com.currency.calculator.mock.RatesResponseMock
 import com.google.gson.Gson
-import feign.Response
 import io.mockk.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
@@ -34,20 +34,18 @@ class ExchangeRateServiceTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    private val ratesResponseMock = RatesResponseMock()
-
     @MockBean
     private lateinit var exchangeRateService: ExchangeRateService
 
-    // Create mock instances
-    val exchangeFeignClient = mockk<ExchangeFeignClient>()
-    val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/test-api-key"
+    private val ratesResponseMock = RatesResponseMock()
+    private val exchangeFeignClient = mockk<ExchangeFeignClient>()
+    private val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/1234"
 
     @Test
     fun `should return latest rates for a valid base code`() {
 
         val baseCode = "BRL"
-        val expectedConversionRates = ratesResponseMock.getLatestRates()
+        val expectedConversionRates = ratesResponseMock.getLatestMockRates()
 
         Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(expectedConversionRates)
 
@@ -64,24 +62,11 @@ class ExchangeRateServiceTest {
     }
 
     @Test
-    fun `should throw BaseCodeNotFoundException when base code is not found`() {
-
-        val methodKey = "ExchangeFeignClient#getLatestExchangeFor"
-        val response = createMockResponse(HttpStatus.NOT_FOUND.value())
-        val errorDecoder = ExchangeErrorDecoder()
-
-        val exception = assertThrows<BaseCodeNotFoundException> {
-            errorDecoder.decode(methodKey, response)
-        }
-        assertEquals("defaultBaseCode", exception.message)
-    }
-
-    @Test
     fun `should calculate currency conversion`() {
 
         val amount = 529.99
         val baseCode = "BRL"
-        val rates = ratesResponseMock.getLatestRates()
+        val rates = ratesResponseMock.getLatestMockRates()
 
         every { exchangeFeignClient.getLatestExchangeFor(any(), any()) } returns getMockApiResponse(rates)
         val exchangeRateService = spyk(ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl))
@@ -118,38 +103,78 @@ class ExchangeRateServiceTest {
     }
 
     @Test
-    fun `test formatRatesToTwoDecimalPlaces with scale 2`() {
+    fun `should format rates to two decimal places with scale 2`() {
+        val ratesResponse = RatesResponse(
+            BRL = 1.234567,
+            EUR = 2.987654,
+            INR = 3.6543,
+            USD = 4.333333
+        )
 
-        val exchangeFeignClient = mockk<ExchangeFeignClient>()
-        val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/test-api-key"
+        ratesResponse.formatRatesToTwoDecimalPlaces(2)
+
+        assertEquals(1.23, ratesResponse.BRL)
+        assertEquals(2.99, ratesResponse.EUR)
+        assertEquals(3.65, ratesResponse.INR)
+        assertEquals(4.33, ratesResponse.USD)
+    }
+
+    @Test
+    fun `should decode ExchangeRatesResponse correctly`() {
+
+        val baseCode = "BRL"
+        val apiUrlWithApiKey = "https://v6.exchangerate-api.com/v6/1234"
+        val mockedResponse = getMockedResponse(baseCode)
+        every { exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode) } returns mockedResponse
+
         val json = Json { ignoreUnknownKeys = true }
 
-        val ratesResponse = RatesResponse(1.234567, 2.987654, 3.0, 4.9999)
-        val exchangeRatesResponse = ExchangeRatesResponse("BRL", ratesResponse)
-        val responseJson = json.encodeToString(ExchangeRatesResponse.serializer(), exchangeRatesResponse)
+        val response = exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode)
+        val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
 
-        every {
-            exchangeFeignClient.getLatestExchangeFor(any(), any())
-        } returns responseJson
+        val result = exchangeRatesResponse.ratesResponse
 
-        val exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl)
+        val expectedRatesResponse = ratesResponseMock.getLatestMockRates()
+        assertEquals(expectedRatesResponse, result)
+    }
 
-        val result = exchangeRateService.getLatestByBaseCode("BRL")
+    @Test
+    fun `should throw UnsupportedCodeException when base code is not found`() {
+        val invalidBaseCode = "XYZ"
 
-        assertEquals(1.23, result.BRL)
-        assertEquals(2.99, result.EUR)
-        assertEquals(3.0, result.INR)
-        assertEquals(5.0, result.USD)
+        val exchangeRateServiceMock = mockk<ExchangeRateService>()
+        every { exchangeRateServiceMock.getLatestByBaseCode(invalidBaseCode) } throws UnsupportedCodeException("Unsupported currency code: $invalidBaseCode")
+
+        mockMvc.perform(get("/latest/$invalidBaseCode"))
+            .andExpect(status().isNotFound)
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(strings = ["BRL", "EUR", "INR", "USD"])
+    fun `test isValidBaseCode with valid base codes`(baseCode: String) {
+        val isValid = isValidBaseCode(baseCode)
+        assertEquals(true, isValid)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["ABC", "EEE", "XYZ", "123"])
+    fun `test isValidBaseCode with invalid base codes`(baseCode: String) {
+        assertThrows(UnsupportedCodeException::class.java) {
+            isValidBaseCode(baseCode)
+        }
     }
 
     @Test
     fun `should throw MalformedRequestException when amount is invalid`() {
-
         val invalidAmount = -100.0
 
-        mockMvc.perform(get("/calculate/$invalidAmount"))
+        val result = mockMvc.perform(get("/calculate/$invalidAmount"))
             .andExpect(status().isBadRequest)
-            .andExpect(content().string("Invalid amount: -100.0"))
+            .andReturn()
+
+        val responseBody = result.response.contentAsString
+        assertEquals("Malformed request: $invalidAmount", responseBody)
     }
 
     private fun getMockApiResponse(rates: RatesResponse): String {
@@ -166,10 +191,18 @@ class ExchangeRateServiceTest {
         """.trimIndent()
     }
 
-    private fun createMockResponse(statusCode: Int): Response {
-        val response = mockk<Response>()
-        every { response.status() } returns statusCode
-        return response
+    private fun getMockedResponse(baseCode: String): String {
+        val ratesResponse = ratesResponseMock.getLatestMockRates()
+        val exchangeRatesResponse = ExchangeRatesResponse(baseCode, ratesResponse)
+        return Json.encodeToString(ExchangeRatesResponse.serializer(), exchangeRatesResponse)
     }
 
+}
+
+private fun isValidBaseCode(baseCode: String): Boolean {
+    val validBaseCodes = listOf("BRL", "EUR", "INR", "USD")
+    if (!validBaseCodes.contains(baseCode)) {
+        throw UnsupportedCodeException("Unsupported currency code: $baseCode")
+    }
+    return true
 }

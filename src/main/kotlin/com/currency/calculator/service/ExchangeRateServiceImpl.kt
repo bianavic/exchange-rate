@@ -2,12 +2,10 @@ package com.currency.calculator.service
 
 import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.feign.ExchangeFeignClient
-import com.currency.calculator.client.model.ExchangeRatesResponse
-import com.currency.calculator.client.model.RatesResponse
-import com.currency.calculator.client.model.formatAmountToTwoDecimalPlaces
-import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
+import com.currency.calculator.client.model.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -18,29 +16,41 @@ class ExchangeRateServiceImpl(
     private val exchangeApiUrl: String
 ) : ExchangeRateService {
 
+    companion object {
+        private val logger = LoggerFactory.getLogger(ExchangeRateServiceImpl::class.java)
+        private const val DECIMAL_PLACES = 2
+    }
+
     private val json = Json { ignoreUnknownKeys = true }
 
-    lateinit var ratesResponse: RatesResponse
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
+        logger.info("getting base code: {}", baseCode)
+
         val apiUrlWithApiKey = exchangeApiUrl.replace("\${EXCHANGE_API_KEY}", System.getenv("EXCHANGE_API_KEY"))
-
         val response = exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode)
-        val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
 
+        val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
         val ratesResponse = exchangeRatesResponse.ratesResponse
-        ratesResponse.formatRatesToTwoDecimalPlaces(2)
+
+        ratesResponse.formatRatesToTwoDecimalPlaces(DECIMAL_PLACES)
+
+        logger.info("exchange rates fetched for base code: {}", baseCode)
 
         return ratesResponse
     }
 
     override fun getAmountCalculated(amount: Double): Map<String, Double> {
 
+        logger.info("getting amount: {}", amount)
+
         if (amount <= 0) {
-            throw MalformedRequestException("Invalid amount: $amount")
+            throw MalformedRequestException("Malformed request: $amount")
         }
 
         val conversionRates = getLatestByBaseCode("BRL")
+
+        logger.info("getting calculated converted amount")
 
         return calculate(amount, conversionRates)
     }
@@ -49,13 +59,15 @@ class ExchangeRateServiceImpl(
         amount: Double,
         conversionRates: RatesResponse
     ): MutableMap<String, Double> {
+
         val convertAmounts = mutableMapOf<String, Double>()
 
         convertAmounts["EUR"] = amount * conversionRates.EUR
         convertAmounts["USD"] = amount * conversionRates.USD
         convertAmounts["INR"] = amount * conversionRates.INR
 
-        convertAmounts.formatAmountToTwoDecimalPlaces(2)
+        convertAmounts.formatAmountToTwoDecimalPlaces(DECIMAL_PLACES)
+
         return convertAmounts
     }
 
