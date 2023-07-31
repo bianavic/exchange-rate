@@ -7,8 +7,10 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 
-//@OpenAPIDefinition(servers = [Server(url = "/", description = "Default Server URL")])
-@OpenAPIDefinition(info = Info(title = "Currency Conversor API", version = "1", description = "A service that converts currencies EUR, INR, USD to BRL based on a provided value."))
+@OpenAPIDefinition(info = Info(
+	title = "Currency Converter API",
+	version = "1",
+	description = "A service that convert currencies EUR, INR, USD to BRL based on a provided value and gets latest foreign exchange rates."))
 @EnableFeignClients
 @SpringBootApplication
 @EnableWebMvc
