@@ -8,7 +8,9 @@ import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
 import com.currency.calculator.controller.ExchangeRateController
 import com.currency.calculator.mock.RatesResponseMock
 import com.google.gson.Gson
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -39,7 +41,6 @@ class ExchangeRateServiceTest {
 
     private val ratesResponseMock = RatesResponseMock()
     private val exchangeFeignClient = mockk<ExchangeFeignClient>()
-    private val exchangeApiUrl = "https://v6.exchangerate-api.com/v6/1234"
 
     @Test
     fun `should return latest rates for a valid base code`() {
@@ -68,8 +69,8 @@ class ExchangeRateServiceTest {
         val baseCode = "BRL"
         val rates = ratesResponseMock.getLatestMockRates()
 
-        every { exchangeFeignClient.getLatestExchangeFor(any(), any()) } returns getMockApiResponse(rates)
-        val exchangeRateService = spyk(ExchangeRateServiceImpl(exchangeFeignClient, exchangeApiUrl))
+        every { exchangeFeignClient.getLatestExchangeFor(any()) } returns getMockApiResponse(rates)
+        val exchangeRateService = spyk(ExchangeRateServiceImpl(exchangeFeignClient))
         every { exchangeRateService.getLatestByBaseCode(baseCode) } returns rates
         val result = exchangeRateService.getAmountCalculated(amount)
 
@@ -123,13 +124,12 @@ class ExchangeRateServiceTest {
     fun `should decode ExchangeRatesResponse correctly`() {
 
         val baseCode = "BRL"
-        val apiUrlWithApiKey = "https://v6.exchangerate-api.com/v6/1234"
         val mockedResponse = getMockedResponse(baseCode)
-        every { exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode) } returns mockedResponse
+        every { exchangeFeignClient.getLatestExchangeFor(baseCode) } returns mockedResponse
 
         val json = Json { ignoreUnknownKeys = true }
 
-        val response = exchangeFeignClient.getLatestExchangeFor(apiUrlWithApiKey, baseCode)
+        val response = exchangeFeignClient.getLatestExchangeFor(baseCode)
         val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
 
         val result = exchangeRatesResponse.ratesResponse
@@ -165,6 +165,7 @@ class ExchangeRateServiceTest {
         }
     }
 
+    // controller
     @Test
     fun `should throw MalformedRequestException when amount is invalid`() {
         val invalidAmount = -100.0

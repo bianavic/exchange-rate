@@ -16,7 +16,6 @@ fun interface ExchangeFeignClient {
 
     @GetMapping("/latest/{baseCode}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun getLatestExchangeFor(
-        @RequestParam("url") url: String,
         @PathVariable("baseCode") baseCode: String): String
 
 }

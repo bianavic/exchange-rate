@@ -47,7 +47,7 @@ class ExchangeRateController(
         } catch (e: UnsupportedCodeException) {
             ResponseEntity.notFound().build()
         } catch (e: ExchangeRateException) {
-            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+            ResponseEntity(HttpStatus.BAD_REQUEST)
         }
     }
 
