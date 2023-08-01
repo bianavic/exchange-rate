@@ -11,15 +11,21 @@ class FeignErrorDecoder(private val gson: Gson) : ErrorDecoder {
     override fun decode(methodKey: String?, response: Response?): Exception {
 
         val responseBody = response?.body()?.asInputStream()
-        val errorResponse = gson.fromJson(InputStreamReader(responseBody), ErrorResponse::class.java)
+        val errorResponse = gson.fromJson(responseBody?.let { InputStreamReader(it) }, ErrorResponse::class.java)
 
-        return when (errorResponse.errorType) {
-            "unsupported-code" -> UnsupportedCodeException("Unsupported currency code")
-            "malformed-request" -> MalformedRequestException("Malformed request")
-            "invalid-key" -> InvalidKeyException("Invalid API key")
-            "inactive-account" -> InactiveAccountException("Inactive account")
-            "quota-reached" -> QuotaReachedException("API quota reached")
-            else -> UnknownCodeException("Unknown error code: ${errorResponse.errorType}")
+        return when {
+            errorResponse == null -> UnknownCodeException("Error response could not be parsed")
+            errorResponse.errorMessage != null -> {
+                when (errorResponse.errorMessage) {
+                    "unsupported-code" -> UnsupportedCodeException("Unsupported currency code")
+                    "malformed-request" -> MalformedRequestException("Malformed request")
+                    "invalid-key" -> InvalidKeyException("Invalid API key")
+                    "inactive-account" -> InactiveAccountException("Inactive account")
+                    "quota-reached" -> QuotaReachedException("API quota reached")
+                    else -> UnknownCodeException("Unknown error code: ${errorResponse.errorMessage}")
+                }
+            }
+            else -> UnknownCodeException("Error message not found in error response")
         }
     }
 

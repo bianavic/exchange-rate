@@ -75,7 +75,7 @@ class ExchangeExceptionTests {
     }
 
     private fun createMockedResponse(errorType: String): Response {
-        val responseBody = """{"result": "error", "errorType": "$errorType"}"""
+        val responseBody = """{"errorMessage": "$errorType"}"""
         val inputStream = ByteArrayInputStream(responseBody.toByteArray(StandardCharsets.UTF_8))
         val responseBodyMock = createResponseBody(inputStream)
         val responseMock = mockk<Response>()

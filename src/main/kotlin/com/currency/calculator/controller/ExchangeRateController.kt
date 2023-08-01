@@ -1,5 +1,6 @@
 package com.currency.calculator.controller
 
+import com.currency.calculator.client.error.ErrorResponse
 import com.currency.calculator.client.error.ExchangeRateException
 import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.error.UnsupportedCodeException
@@ -56,9 +57,7 @@ class ExchangeRateController(
             val response = exchangeRateService.getLatestByBaseCode(baseCode)
             ResponseEntity(response, HttpStatus.OK)
         } catch (e: UnsupportedCodeException) {
-            ResponseEntity.notFound().build()
-        } catch (e: ExchangeRateException) {
-            ResponseEntity(HttpStatus.BAD_REQUEST)
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("Unsupported currency code: $baseCode"))
         }
     }
 
