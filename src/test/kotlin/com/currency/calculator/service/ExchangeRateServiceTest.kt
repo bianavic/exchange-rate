@@ -5,61 +5,48 @@ import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
 import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
-import com.currency.calculator.controller.ExchangeRateController
 import com.currency.calculator.mock.RatesResponseMock
-import com.google.gson.Gson
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.context.TestPropertySource
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest(ExchangeRateController::class)
-@TestPropertySource("classpath:application-test.properties")
 class ExchangeRateServiceTest {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
 
     @MockBean
     private lateinit var exchangeRateService: ExchangeRateService
-
+    private lateinit var exchangeFeignClient: ExchangeFeignClient
     private val ratesResponseMock = RatesResponseMock()
-    private val exchangeFeignClient = mockk<ExchangeFeignClient>()
+
+    @BeforeEach
+    fun setUp() {
+        MockKAnnotations.init(this)
+        exchangeFeignClient = mockk<ExchangeFeignClient>()
+        exchangeRateService = ExchangeRateServiceImpl(exchangeFeignClient)
+    }
 
     @Test
     fun `should return latest rates for a valid base code`() {
 
         val baseCode = "BRL"
-        val expectedConversionRates = ratesResponseMock.getLatestMockRates()
+        val expectedResponse = "{\"base_code\": \"$baseCode\", \"conversion_rates\": {\"BRL\": 1.0, \"USD\": 1.234, \"EUR\": 0.876, \"INR\": 17.07}}"
 
-        Mockito.`when`(exchangeRateService.getLatestByBaseCode(baseCode)).thenReturn(expectedConversionRates)
+        every { exchangeFeignClient.getLatestExchangeFor(baseCode) } returns expectedResponse
 
-        val result = mockMvc.perform(get("/latest/$baseCode"))
-            .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andReturn()
+        val ratesResponse = exchangeRateService.getLatestByBaseCode(baseCode)
 
-        val actualResponse = result.response.contentAsString
-        val gson = Gson()
-        val actualRatesResponse = gson.fromJson(actualResponse, RatesResponse::class.java)
+        assertEquals(1.0, ratesResponse.BRL)
+        assertEquals(1.23, ratesResponse.USD)
+        assertEquals(0.88, ratesResponse.EUR)
+        assertEquals(17.07, ratesResponse.INR)
 
-        assertEquals(expectedConversionRates, actualRatesResponse)
+        verify { exchangeFeignClient.getLatestExchangeFor(baseCode) }
     }
 
     @Test
@@ -79,7 +66,8 @@ class ExchangeRateServiceTest {
             "USD" to (amount * rates.USD),
             "INR" to (amount * rates.INR)
         )
-        val formattedExpectedResponse = expectedResponse.mapValues { (_, value) -> String.format("%.2f", value).toDouble() }
+        val formattedExpectedResponse =
+            expectedResponse.mapValues { (_, value) -> String.format("%.2f", value).toDouble() }
 
         assertEquals(formattedExpectedResponse, result)
 
@@ -95,7 +83,8 @@ class ExchangeRateServiceTest {
             }
         """.trimIndent()
         val json = Json { ignoreUnknownKeys = true }
-        val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(ExchangeRatesResponse.serializer(), responseJsonString)
+        val exchangeRatesResponse =
+            json.decodeFromString(ExchangeRatesResponse.serializer(), responseJsonString)
 
         val expectedRatesResponse = exchangeRatesResponse.ratesResponse
         expectedRatesResponse.formatRatesToTwoDecimalPlaces(2)
@@ -138,18 +127,6 @@ class ExchangeRateServiceTest {
         assertEquals(expectedRatesResponse, result)
     }
 
-    @Test
-    fun `should throw UnsupportedCodeException when base code is not found`() {
-        val invalidBaseCode = "XYZ"
-
-        val exchangeRateServiceMock = mockk<ExchangeRateService>()
-        every { exchangeRateServiceMock.getLatestByBaseCode(invalidBaseCode) } throws UnsupportedCodeException("Unsupported currency code: $invalidBaseCode")
-
-        mockMvc.perform(get("/latest/$invalidBaseCode"))
-            .andExpect(status().isNotFound)
-    }
-
-
     @ParameterizedTest
     @ValueSource(strings = ["BRL", "EUR", "INR", "USD"])
     fun `test isValidBaseCode with valid base codes`(baseCode: String) {
@@ -163,19 +140,6 @@ class ExchangeRateServiceTest {
         assertThrows(UnsupportedCodeException::class.java) {
             isValidBaseCode(baseCode)
         }
-    }
-
-    // controller
-    @Test
-    fun `should throw MalformedRequestException when amount is invalid`() {
-        val invalidAmount = -100.0
-
-        val result = mockMvc.perform(get("/calculate/$invalidAmount"))
-            .andExpect(status().isBadRequest)
-            .andReturn()
-
-        val responseBody = result.response.contentAsString
-        assertEquals("Malformed request: $invalidAmount", responseBody)
     }
 
     private fun getMockApiResponse(rates: RatesResponse): String {

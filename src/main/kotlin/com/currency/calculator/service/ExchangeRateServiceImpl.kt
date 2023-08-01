@@ -44,7 +44,7 @@ class ExchangeRateServiceImpl(
         logger.info("getting amount: {}", amount)
 
         if (amount <= 0) {
-            throw MalformedRequestException("service: Malformed request: $amount")
+            throw MalformedRequestException("Malformed request: $amount")
         }
 
         val conversionRates = getLatestByBaseCode("BRL")

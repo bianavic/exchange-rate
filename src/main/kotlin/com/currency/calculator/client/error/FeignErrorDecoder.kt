@@ -25,7 +25,7 @@ class FeignErrorDecoder(private val gson: Gson) : ErrorDecoder {
 
 }
 
-sealed class ExchangeRateException(message: String) : RuntimeException(message)
+open class ExchangeRateException(message: String) : RuntimeException(message)
 class UnsupportedCodeException(message: String) : ExchangeRateException(message)
 class InactiveAccountException(message: String) : ExchangeRateException(message)
 class InvalidKeyException(message: String) : ExchangeRateException(message)

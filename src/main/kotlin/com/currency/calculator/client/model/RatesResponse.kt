@@ -24,7 +24,8 @@ fun RatesResponse.formatRatesToTwoDecimalPlaces(scale: Int) {
 
 fun MutableMap<String, Double>.formatAmountToTwoDecimalPlaces(scale: Int) {
     this.forEach { (currency, amount) ->
-        this[currency] = amount.format(scale).toDouble() }
+        this[currency] = amount.format(scale).toDouble()
+    }
 }
 
 fun Double.format(scale: Int) = "%.${scale}f".format(this)
