@@ -57,7 +57,8 @@ class ExchangeRateController(
             val response = exchangeRateService.getLatestByBaseCode(baseCode)
             ResponseEntity(response, HttpStatus.OK)
         } catch (e: UnsupportedCodeException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("Unsupported currency code: $baseCode"))
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Unsupported currency code: $baseCode")
         }
     }
 

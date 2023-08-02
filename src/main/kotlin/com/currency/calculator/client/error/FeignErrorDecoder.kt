@@ -15,7 +15,7 @@ class FeignErrorDecoder(private val gson: Gson) : ErrorDecoder {
 
         return when {
             errorResponse == null -> UnknownCodeException("Error response could not be parsed")
-            errorResponse.errorMessage != null -> {
+            else -> {
                 when (errorResponse.errorMessage) {
                     "unsupported-code" -> UnsupportedCodeException("Unsupported currency code")
                     "malformed-request" -> MalformedRequestException("Malformed request")
@@ -25,7 +25,6 @@ class FeignErrorDecoder(private val gson: Gson) : ErrorDecoder {
                     else -> UnknownCodeException("Unknown error code: ${errorResponse.errorMessage}")
                 }
             }
-            else -> UnknownCodeException("Error message not found in error response")
         }
     }
 
