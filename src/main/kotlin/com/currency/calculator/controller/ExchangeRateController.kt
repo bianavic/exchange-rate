@@ -55,6 +55,9 @@ class ExchangeRateController(
                 throw UnsupportedCodeException("Unsupported currency code: $baseCode")
             }
             val response = exchangeRateService.getLatestByBaseCode(baseCode)
+
+            logger.info("{}", response)
+
             ResponseEntity(response, HttpStatus.OK)
         } catch (e: UnsupportedCodeException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -84,6 +87,9 @@ class ExchangeRateController(
                 throw MalformedRequestException("Malformed request: $amount")
             }
             val convertAmounts = exchangeRateService.getAmountCalculated(amount)
+
+            logger.info("{}", convertAmounts)
+
             ResponseEntity(convertAmounts, HttpStatus.OK)
         } catch (e: ExchangeRateException) {
             ResponseEntity.badRequest().body(e.message)

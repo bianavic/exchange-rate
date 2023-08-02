@@ -25,8 +25,6 @@ class ExchangeRateServiceImpl(
 
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
-        logger.info("getting base code: {}", baseCode)
-
         val response = exchangeFeignClient.getLatestExchangeFor(baseCode)
 
         val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
@@ -34,7 +32,7 @@ class ExchangeRateServiceImpl(
 
         ratesResponse.formatRatesToTwoDecimalPlaces(DECIMAL_PLACES)
 
-        logger.info("exchange rates fetched for base code: {}", baseCode)
+        logger.info("fetching exchange rates for base code: {}", baseCode)
 
         return ratesResponse
     }
@@ -49,7 +47,7 @@ class ExchangeRateServiceImpl(
 
         val conversionRates = getLatestByBaseCode("BRL")
 
-        logger.info("getting calculated converted amount")
+        logger.info("fetching exchange rates {}", conversionRates)
 
         return calculate(amount, conversionRates)
     }
