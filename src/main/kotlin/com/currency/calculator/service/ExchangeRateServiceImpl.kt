@@ -2,12 +2,10 @@ package com.currency.calculator.service
 
 import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.feign.ExchangeFeignClient
-import com.currency.calculator.client.model.ExchangeRatesResponse
 import com.currency.calculator.client.model.RatesResponse
+import com.currency.calculator.client.model.exchangeSerialization
 import com.currency.calculator.client.model.formatAmountToTwoDecimalPlaces
 import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -21,20 +19,16 @@ class ExchangeRateServiceImpl(
         private const val DECIMAL_PLACES = 2
     }
 
-    private val json = Json { ignoreUnknownKeys = true }
-
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
-        val response = exchangeFeignClient.getLatestExchangeFor(baseCode)
+        val exchangeApiResponse = exchangeFeignClient.getLatestExchangeFor(baseCode)
+        val rates = exchangeSerialization(exchangeApiResponse).ratesResponse
 
-        val exchangeRatesResponse = json.decodeFromString<ExchangeRatesResponse>(response)
-        val ratesResponse = exchangeRatesResponse.ratesResponse
-
-        ratesResponse.formatRatesToTwoDecimalPlaces(DECIMAL_PLACES)
+        rates.formatRatesToTwoDecimalPlaces(DECIMAL_PLACES)
 
         logger.info("fetching exchange rates for base code: {}", baseCode)
 
-        return ratesResponse
+        return rates
     }
 
     override fun getAmountCalculated(amount: Double): Map<String, Double> {

@@ -1,6 +1,5 @@
 package com.currency.calculator.controller
 
-import com.currency.calculator.client.error.ErrorResponse
 import com.currency.calculator.client.error.ExchangeRateException
 import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.error.UnsupportedCodeException
