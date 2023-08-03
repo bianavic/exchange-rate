@@ -1,5 +1,6 @@
 package com.currency.calculator.service
 
+import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.error.UnsupportedCodeException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.ExchangeRatesResponse
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import org.mockito.Mockito.mock
 import org.springframework.boot.test.mock.mockito.MockBean
 
 class ExchangeRateServiceTest {
@@ -141,6 +143,21 @@ class ExchangeRateServiceTest {
             isValidBaseCode(baseCode)
         }
     }
+
+    @Test
+    fun `test getAmountCalculated with negative amount should throw MalformedRequestException`() {
+        val exchangeFeignClientMock = mock(ExchangeFeignClient::class.java)
+        val service = ExchangeRateServiceImpl(exchangeFeignClientMock)
+
+        val negativeAmount = -100.0
+
+        val exception = assertThrows(MalformedRequestException::class.java) {
+            service.getAmountCalculated(negativeAmount)
+        }
+
+        assertEquals("Malformed request: $negativeAmount", exception.message)
+    }
+
 
     private fun getMockApiResponse(rates: RatesResponse): String {
         return """
