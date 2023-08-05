@@ -1,9 +1,13 @@
 package com.currency.calculator.client.model
 
+import com.google.gson.FieldNamingStrategy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import java.lang.reflect.Field
 
 @Serializable
 data class ExchangeRatesResponse(
@@ -13,14 +17,18 @@ data class ExchangeRatesResponse(
     var ratesResponse: RatesResponse
 )
 
-fun parseJSON(jsonString: String): RatesResponse {
+fun parseJSON(jsonString: String): ExchangeRatesResponse {
     val json = Json { ignoreUnknownKeys = true }
-    val ratesResponse = json.decodeFromString<ExchangeRatesResponse>(jsonString).ratesResponse
+    return json.decodeFromString(jsonString)
+}
 
-    ratesResponse.BRL = ratesResponse.BRL ?: 0.0
-    ratesResponse.EUR = ratesResponse.EUR ?: 0.0
-    ratesResponse.INR = ratesResponse.INR ?: 0.0
-    ratesResponse.USD = ratesResponse.USD ?: 0.0
-
-    return ratesResponse
+fun createGson() : Gson {
+    return GsonBuilder()
+        .setFieldNamingStrategy(object : FieldNamingStrategy {
+            override fun translateName(f: Field): String {
+                return f.getAnnotation(SerialName::class.java)?.value ?: f.name.toUpperCase()
+            }
+        })
+        .setPrettyPrinting()
+        .create()
 }
