@@ -13,7 +13,14 @@ data class ExchangeRatesResponse(
     var ratesResponse: RatesResponse
 )
 
-fun exchangeSerialization(response: String): ExchangeRatesResponse {
+fun parseJSON(jsonString: String): RatesResponse {
     val json = Json { ignoreUnknownKeys = true }
-    return json.decodeFromString<ExchangeRatesResponse>(response)
+    val ratesResponse = json.decodeFromString<ExchangeRatesResponse>(jsonString).ratesResponse
+
+    ratesResponse.BRL = ratesResponse.BRL ?: 0.0
+    ratesResponse.EUR = ratesResponse.EUR ?: 0.0
+    ratesResponse.INR = ratesResponse.INR ?: 0.0
+    ratesResponse.USD = ratesResponse.USD ?: 0.0
+
+    return ratesResponse
 }

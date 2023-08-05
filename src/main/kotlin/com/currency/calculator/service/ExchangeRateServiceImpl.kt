@@ -3,9 +3,9 @@ package com.currency.calculator.service
 import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.feign.ExchangeFeignClient
 import com.currency.calculator.client.model.RatesResponse
-import com.currency.calculator.client.model.exchangeSerialization
 import com.currency.calculator.client.model.formatAmountToTwoDecimalPlaces
 import com.currency.calculator.client.model.formatRatesToTwoDecimalPlaces
+import com.currency.calculator.client.model.parseJSON
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -22,7 +22,7 @@ class ExchangeRateServiceImpl(
     override fun getLatestByBaseCode(baseCode: String): RatesResponse {
 
         val exchangeApiResponse = exchangeFeignClient.getLatestExchangeFor(baseCode)
-        val rates = exchangeSerialization(exchangeApiResponse).ratesResponse
+        val rates = parseJSON(exchangeApiResponse)
 
         rates.formatRatesToTwoDecimalPlaces(DECIMAL_PLACES)
 
