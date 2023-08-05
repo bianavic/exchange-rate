@@ -152,9 +152,7 @@ curl --location 'http://localhost:8001/calculate/529.99'
 Para visualizar a documentação da API e realizar testes com outros valores, acesse: [Documentação do Swagger](http://localhost:8001/swagger-ui/index.html#/)
 
 ## Roadmap | Melhorias
-- Implementar logs
 - Sistema de análise de performance, monitoria, tracing
-- Ajustar casas decimais aos valores monetários.
 - Implementar uma pipeline
 - Análise de código
 - Código para produção
