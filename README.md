@@ -82,8 +82,8 @@ Um serviço que converte as moedas EUR, INR, USD para REAIS com base em um valor
 {
     "BRL": 1.0,
     "EUR": 0.19,
-    "INR": 17.11,
-    "USD": 0.21
+    "INR": 16.92,
+    "USD": 0.2
 }
 ```
 
@@ -102,9 +102,9 @@ Um serviço que converte as moedas EUR, INR, USD para REAIS com base em um valor
 
 ``` json
 {
-    "EUR": 98.36614399999999,
-    "USD": 110.449916,
-    "INR": 9072.633815000001
+    "EUR": 100.7,
+    "USD": 106.0,
+    "INR": 8967.43
 }
 ```
 
@@ -152,9 +152,7 @@ curl --location 'http://localhost:8001/calculate/529.99'
 Para visualizar a documentação da API e realizar testes com outros valores, acesse: [Documentação do Swagger](http://localhost:8001/swagger-ui/index.html#/)
 
 ## Roadmap | Melhorias
-- Implementar logs
 - Sistema de análise de performance, monitoria, tracing
-- Ajustar casas decimais aos valores monetários.
 - Implementar uma pipeline
 - Análise de código
 - Código para produção

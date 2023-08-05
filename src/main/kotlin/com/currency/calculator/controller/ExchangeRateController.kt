@@ -4,6 +4,7 @@ import com.currency.calculator.client.error.ExchangeRateException
 import com.currency.calculator.client.error.MalformedRequestException
 import com.currency.calculator.client.error.UnsupportedCodeException
 import com.currency.calculator.client.model.CurrencyCodeValidator
+import com.currency.calculator.client.model.createGson
 import com.currency.calculator.service.ExchangeRateService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -55,9 +56,12 @@ class ExchangeRateController(
             }
             val response = exchangeRateService.getLatestByBaseCode(baseCode)
 
-            logger.info("{}", response)
+            val gson = createGson()
+            val jsonOutput = gson.toJson(response)
 
-            ResponseEntity(response, HttpStatus.OK)
+            logger.info("{}", jsonOutput)
+
+            ResponseEntity(jsonOutput, HttpStatus.OK)
         } catch (e: UnsupportedCodeException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Unsupported currency code: $baseCode")
