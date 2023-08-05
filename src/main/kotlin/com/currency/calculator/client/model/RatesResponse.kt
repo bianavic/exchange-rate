@@ -14,3 +14,18 @@ data class RatesResponse(
     @SerialName("USD")
     var USD: Double
 )
+
+fun RatesResponse.formatRatesToTwoDecimalPlaces(scale: Int) {
+    BRL = BRL.format(scale).toDouble()
+    EUR = EUR.format(scale).toDouble()
+    INR = INR.format(scale).toDouble()
+    USD = USD.format(scale).toDouble()
+}
+
+fun MutableMap<String, Double>.formatAmountToTwoDecimalPlaces(scale: Int) {
+    this.forEach { (currency, amount) ->
+        this[currency] = amount.format(scale).toDouble()
+    }
+}
+
+fun Double.format(scale: Int) = "%.${scale}f".format(this)

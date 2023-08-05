@@ -1,0 +1,27 @@
+[INFO ] 2023-07-26 14:56:25.834 [main] CalculatorApplication$Companion - Starting CalculatorApplication.Companion using Java 17.0.7 with PID 22996 (/home/ribon/Documents/workspace/sbf/calculator/build/classes/kotlin/main started by ribon in /home/ribon/Documents/workspace/sbf/calculator)
+[INFO ] 2023-07-26 14:56:25.841 [main] CalculatorApplication$Companion - No active profile set, falling back to 1 default profile: "default"
+[INFO ] 2023-07-26 14:56:27.248 [main] GenericScope - BeanFactory id=3c83fbc4-879c-304a-8851-7b773bc41e31
+[INFO ] 2023-07-26 14:56:27.335 [main] PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'com.currency.calculator.client.feign.ExchangeFeignClient' of type [org.springframework.cloud.openfeign.FeignClientFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[ERROR] 2023-07-26 14:56:27.380 [main] AprLifecycleListener - An incompatible version [1.2.31] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.34]
+[INFO ] 2023-07-26 14:56:27.770 [main] TomcatWebServer - Tomcat initialized with port(s): 8001 (http)
+[INFO ] 2023-07-26 14:56:27.780 [main] Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8001"]
+[INFO ] 2023-07-26 14:56:27.784 [main] StandardService - Starting service [Tomcat]
+[INFO ] 2023-07-26 14:56:27.785 [main] StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.10]
+[INFO ] 2023-07-26 14:56:27.971 [main] [/] - Initializing Spring embedded WebApplicationContext
+[INFO ] 2023-07-26 14:56:27.973 [main] ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2074 ms
+[INFO ] 2023-07-26 14:56:29.416 [main] EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+[INFO ] 2023-07-26 14:56:29.731 [main] Http11NioProtocol - Starting ProtocolHandler ["http-nio-8001"]
+[INFO ] 2023-07-26 14:56:30.121 [main] TomcatWebServer - Tomcat started on port(s): 8001 (http) with context path ''
+[INFO ] 2023-07-26 14:56:30.185 [main] CalculatorApplication$Companion - Started CalculatorApplication.Companion in 4.868 seconds (process running for 6.261)
+[INFO ] 2023-07-26 14:58:10.834 [http-nio-8001-exec-1] [/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+[INFO ] 2023-07-26 14:58:10.836 [http-nio-8001-exec-1] DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+[INFO ] 2023-07-26 14:58:10.839 [http-nio-8001-exec-1] DispatcherServlet - Completed initialization in 3 ms
+[INFO ] 2023-07-26 14:58:10.940 [http-nio-8001-exec-1] ExchangeRateController - getting exchange rate by baseCode: BRL
+[INFO ] 2023-07-26 14:58:10.940 [http-nio-8001-exec-1] ExchangeRateServiceImpl - getting base code: BRL
+[INFO ] 2023-07-26 14:58:12.551 [http-nio-8001-exec-1] ExchangeRateServiceImpl - exchange rates fetched for base code: BRL
+[WARN ] 2023-07-26 14:58:12.836 [http-nio-8001-exec-2] PageNotFound - No mapping for GET /favicon.ico
+[INFO ] 2023-07-26 14:59:08.010 [http-nio-8001-exec-3] ExchangeRateController - Calculating currency conversion based on amount 529.99
+[INFO ] 2023-07-26 14:59:08.010 [http-nio-8001-exec-3] ExchangeRateServiceImpl - getting amount: 529.99
+[INFO ] 2023-07-26 14:59:08.010 [http-nio-8001-exec-3] ExchangeRateServiceImpl - getting base code: BRL
+[INFO ] 2023-07-26 14:59:09.011 [http-nio-8001-exec-3] ExchangeRateServiceImpl - exchange rates fetched for base code: BRL
+[INFO ] 2023-07-26 14:59:09.011 [http-nio-8001-exec-3] ExchangeRateServiceImpl - getting calculated converted amount

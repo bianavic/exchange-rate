@@ -1,99 +1,92 @@
 package com.currency.calculator.client
 
-import com.currency.calculator.client.error.ExchangeErrorDecoder
-import com.currency.calculator.client.exceptions.*
+import com.currency.calculator.client.error.*
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import feign.Response
+import feign.codec.ErrorDecoder
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
+import java.io.ByteArrayInputStream
+import java.nio.charset.StandardCharsets
 
 class ExchangeExceptionTests {
 
-    private val error = ExchangeErrorDecoder()
+    private lateinit var errorDecoder: ErrorDecoder
+    private lateinit var gson: Gson
 
-    @Test
-    fun `test should return MalformedRequestException BAD REQUEST`() {
-        // Arrange
-        val response = createMockResponse(400)
-
-        // Act
-        val exception = error.decode("", response)
-
-        // Assert
-        assertEquals(MalformedRequestException::class.java, exception.javaClass)
-        assertEquals("Malformed request", exception.message)
+    @BeforeEach
+    fun setUp() {
+        gson = GsonBuilder().create()
+        errorDecoder = FeignErrorDecoder(gson)
     }
 
     @Test
-    fun `test should return InvalidKeyException UNAUTHORIZED`() {
-        // Arrange
-        val response = createMockResponse(401)
+    fun `should return UnsupportedCodeException`() {
+        val responseMock = createMockedResponse("unsupported-code")
 
-        // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("methodKey", responseMock)
 
-        // Assert
-        assertEquals(InvalidKeyException::class.java, exception.javaClass)
+        assertEquals(UnsupportedCodeException::class.java, exception::class.java)
+        assertEquals("Unsupported currency code", exception.message)
+    }
+
+    @Test
+    fun `should return InvalidKeyException`() {
+        val responseMock = createMockedResponse("invalid-key")
+
+        val exception = errorDecoder.decode("methodKey", responseMock)
+
+        assertEquals(InvalidKeyException::class.java, exception::class.java)
         assertEquals("Invalid API key", exception.message)
     }
 
     @Test
-    fun `test should return InactiveAccountException FORBIDDEN`() {
-        // Arrange
-        val response = createMockResponse(403)
+    fun `should return InactiveAccountException`() {
+        val responseMock = createMockedResponse("inactive-account")
 
-        // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("methodKey", responseMock)
 
-        // Assert
-        assertEquals(InactiveAccountException::class.java, exception.javaClass)
-        assertEquals("Inactive account", exception.message)
+        assertEquals(InactiveAccountException::class.java, exception?.javaClass)
+        assertEquals("Inactive account", exception?.message)
     }
 
     @Test
-    fun `test should return BaseCodeNotFoundException NOT FOUND`() {
-        // Arrange
-        val response = createMockResponse(404)
+    fun `should return QuotaReachedException`() {
+        val responseMock = createMockedResponse("quota-reached")
 
-        // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("methodKey", responseMock)
 
-        // Assert
-        assertEquals(BaseCodeNotFoundException::class.java, exception.javaClass)
-        assertEquals("Base code not found", exception.message)
-    }
-
-    @Test
-    fun `test should return QuotaReachedException TOO MANY REQUESTS`() {
-        // Arrange
-        val response = createMockResponse(429)
-
-        // Act
-        val exception = error.decode("", response)
-
-        // Assert
-        assertEquals(QuotaReachedException::class.java, exception.javaClass)
+        assertEquals(QuotaReachedException::class.java, exception::class.java)
         assertEquals("API quota reached", exception.message)
     }
 
     @Test
-    fun `test should return UnknownErrorException INTERNAL SERVER ERROR`() {
-        // Arrange
-        val response = createMockResponse(500)
+    fun `should return UnknownCodeException`() {
+        val responseMock = createMockedResponse("unknown-error-type")
 
-        // Act
-        val exception = error.decode("", response)
+        val exception = errorDecoder.decode("methodKey", responseMock)
 
-        // Assert
-        assertEquals(UnknownErrorException::class.java, exception.javaClass)
-        assertEquals("Unknown error occurred", exception.message)
+        assertEquals(UnknownCodeException::class.java, exception::class.java)
+        assertEquals("Unknown error code: unknown-error-type", exception.message)
     }
 
-    private fun createMockResponse(statusCode: Int): Response {
-        val response = mock(Response::class.java)
-        `when`(response.status()).thenReturn(statusCode)
-        return response
+    private fun createMockedResponse(errorType: String): Response {
+        val responseBody = """{"errorMessage": "$errorType"}"""
+        val inputStream = ByteArrayInputStream(responseBody.toByteArray(StandardCharsets.UTF_8))
+        val responseBodyMock = createResponseBody(inputStream)
+        val responseMock = mockk<Response>()
+        every { responseMock.body() } returns responseBodyMock
+        return responseMock
+    }
+
+    private fun createResponseBody(inputStream: ByteArrayInputStream): Response.Body {
+        val responseBodyMock = mockk<Response.Body>()
+        every { responseBodyMock.asInputStream() } returns inputStream
+        return responseBodyMock
     }
 
 }

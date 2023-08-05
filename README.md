@@ -1,8 +1,11 @@
 # Conversor de Moedas
 
-Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
+Um serviço que converte as moedas EUR, INR, USD para REAIS com base em um valor fornecido.
 
 <p align="">
+   <a alt="Ubuntu">
+        <img src="https://img.shields.io/badge/Ubuntu-E95420?ubuntu&logoColor=white" />
+    </a>
      <a alt="Java">
         <img src="https://img.shields.io/badge/Java-v17-blue.svg" />
     </a>
@@ -15,23 +18,11 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
     <a alt="Gradle">
         <img src="https://img.shields.io/badge/Gradle-v7.2-lightgreen.svg" />
     </a>
-    <a alt="Docker">
-        <img src="https://img.shields.io/badge/Docker-2CA5E0?logoColor=white" />
-    </a>
-    <a alt="Swagger">
-        <img src="https://img.shields.io/badge/Swagger-85EA2D?logoColor=white" />
-    </a>
     <a alt="OpenFeign">
         <img src="https://img.shields.io/badge/OpenFeign-darkblue.svg" />
     </a>
     <a alt="JUnit">
         <img src="https://img.shields.io/badge/Junit-5-25A162?logoColor=white" />
-    </a>
-   <a alt="Ubuntu">
-        <img src="https://img.shields.io/badge/Ubuntu-E95420?ubuntu&logoColor=white" />
-    </a>
-    <a alt="JaCoCo">
-        <img src="https://img.shields.io/badge/Jacoco-0.8.8-&logoColor=darkblue.svg" />
     </a>
     <a alt="Wiremock">
         <img src="https://img.shields.io/badge/Wiremock-2.35.0-&logoColor=blue" />
@@ -41,6 +32,15 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
     </a>
     <a alt="Mockito">
         <img src="https://img.shields.io/badge/Mockito-5.2.0-darkblue.svg" />
+    </a>
+    <a alt="Docker">
+        <img src="https://img.shields.io/badge/Docker-24.0.4-2CA5E0?logoColor=white" />
+    </a>
+    <a alt="Swagger">
+        <img src="https://img.shields.io/badge/Swagger-85EA2D?logoColor=white" />
+    </a>
+   <a alt="JaCoCo">
+        <img src="https://img.shields.io/badge/Jacoco-0.8.8-&logoColor=darkblue.svg" />
     </a>
 </p>
 
@@ -60,7 +60,8 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
  
 ### API Externa
 
-- [Documentação ExhangeRate-API](https://www.exchangerate-api.com/docs/overview)
+- [Documentação API](https://www.exchangerate-api.com/docs/overview)
+- [Cadastro API](https://app.exchangerate-api.com/sign-up) : obter chave
 
 ### ENDPOINTS
 
@@ -80,9 +81,9 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
 ``` json
 {
     "BRL": 1.0,
-    "EUR": 0.1856,
-    "INR": 17.1185,
-    "USD": 0.2084
+    "EUR": 0.19,
+    "INR": 17.11,
+    "USD": 0.21
 }
 ```
 
@@ -110,7 +111,7 @@ Um serviço que exponha o valor das mercadorias na moeda corrente do cliente.
 ### COBERTURA DE TESTES
 ![Alt text](assets/jacoco.png?raw=true "Teste de cobertura")
 
-## Configuração (ambiente Unix)
+## Configuração
 
 Clonar o projeto
 
@@ -129,11 +130,11 @@ Build and run
 ```bash
   docker build -t calculator:latest .
 ```
+obs: abaixo, substitua *YOUR_EXCHANGE_API_KEY* pela chave adquirida ao realizar o cadastro na API
 
 ```bash
-  docker run -p 8001:8001 calculator
+docker run -p 8001:8001 -e EXCHANGE_API_KEY=YOUR_EXCHANGE_API_KEY calculator
 ```
-
 ### Realizar as chamadas
 
 CONVERSÃO
@@ -141,6 +142,7 @@ CONVERSÃO
 curl --location 'http://localhost:8001/latest/BRL'
 ```
 
+obs: abaixo você pode substituir o 529.99 por qualquer outro valor bigdecimal. 
 CÁLCULO
 ```bash
 curl --location 'http://localhost:8001/calculate/529.99'
